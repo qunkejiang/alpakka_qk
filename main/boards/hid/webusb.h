@@ -4,7 +4,7 @@
 // #pragma once
 // #include <stdbool.h>
 // #include "common.h"
-// #include "ctrl.h"
+#include "ctrl.h"
 
 #define WEBUSB_BUFFER_SIZE 2048
 

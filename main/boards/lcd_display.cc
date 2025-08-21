@@ -72,13 +72,22 @@ SpiLcdDisplay::SpiLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_h
     SetupUI();
 }
 
+void LcdDisplay::Lcd_ui_tick(void *pvParameters)
+{
+    while (1) {
+        lvgl_port_lock(0);
+        ui_tick();
+        lvgl_port_unlock();
+        vTaskDelay(pdMS_TO_TICKS(10));
+    }
+}
 void LcdDisplay::SetupUI() {
     if (!Lock(30000)) {
         ESP_LOGE("Display", "Failed to lock display");
     }
     ui_init();
-    
     Unlock();
+    xTaskCreatePinnedToCore(Lcd_ui_tick, "Lcd_ui_tick", 4096, NULL, 4, NULL, 0);
 }
 
 bool LcdDisplay::Lock(int timeout_ms) {

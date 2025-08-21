@@ -100,7 +100,16 @@ void Application::periodic_sensor_read_task(void *pvParameters) {
 
         periodic_hanld(&sensor_data, board);
         vTaskDelay(1); 
-    int i =  0;
+    }
+}
+
+
+void Application::Start() {
+    auto& board = Board::GetInstance();
+    xTaskCreatePinnedToCore(periodic_sensor_read_task, "sensor_read_task", 4096, &board, 4, NULL, 0);
+}
+
+//      int i =  0;
 //         if(i>=999)
 //         {
 //            //i=0;
@@ -122,11 +131,3 @@ void Application::periodic_sensor_read_task(void *pvParameters) {
 //         {
 //             i++;
 //         }
-    }
-}
-
-
-void Application::Start() {
-    auto& board = Board::GetInstance();
-    xTaskCreatePinnedToCore(periodic_sensor_read_task, "sensor_read_task", 4096, &board, 4, NULL, 0);
-}

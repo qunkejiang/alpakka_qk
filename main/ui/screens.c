@@ -38,7 +38,7 @@ static void event_handler_cb_gamepad_page_gamepad_page(lv_event_t *e) {
     }
 }
 
-static void event_handler_cb_qh_qh(lv_event_t *e) {
+static void event_handler_cb_qh_1_qh_1(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
@@ -49,7 +49,7 @@ static void event_handler_cb_qh_qh(lv_event_t *e) {
     }
 }
 
-static void event_handler_cb_qh_1_qh_1(lv_event_t *e) {
+static void event_handler_cb_qh_2_qh_2(lv_event_t *e) {
     lv_event_code_t event = lv_event_get_code(e);
     void *flowState = lv_event_get_user_data(e);
     (void)flowState;
@@ -117,6 +117,110 @@ void create_screen_gamepad_page() {
     lv_obj_set_pos(obj, 0, 0);
     lv_obj_set_size(obj, 160, 160);
     lv_obj_add_event_cb(obj, event_handler_cb_gamepad_page_gamepad_page, LV_EVENT_ALL, flowState);
+    lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    {
+        lv_obj_t *parent_obj = obj;
+        {
+            lv_obj_t *obj = lv_animimg_create(parent_obj);
+            lv_obj_set_pos(obj, 5, 5);
+            lv_obj_set_size(obj, 150, 150);
+            static const lv_image_dsc_t *images[1] = {
+                &img_standby,
+            };
+            lv_animimg_set_src(obj, (const void **)images, 1);
+            lv_animimg_set_duration(obj, 2000);
+            lv_animimg_set_repeat_count(obj, LV_ANIM_REPEAT_INFINITE);
+            lv_animimg_start(obj);
+        }
+    }
+    
+    tick_screen_gamepad_page();
+}
+
+void tick_screen_gamepad_page() {
+    void *flowState = getFlowState(0, 1);
+    (void)flowState;
+}
+
+void create_screen_qh_1() {
+    void *flowState = getFlowState(0, 2);
+    (void)flowState;
+    lv_obj_t *obj = lv_obj_create(0);
+    objects.qh_1 = obj;
+    lv_obj_set_pos(obj, 0, 0);
+    lv_obj_set_size(obj, 160, 160);
+    lv_obj_add_event_cb(obj, event_handler_cb_qh_1_qh_1, LV_EVENT_ALL, flowState);
+    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    {
+        lv_obj_t *parent_obj = obj;
+        {
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            objects.obj0 = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 160, 160);
+            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            create_user_widget_keyboard2(obj, getFlowState(flowState, 0), 7);
+        }
+    }
+    
+    tick_screen_qh_1();
+}
+
+void tick_screen_qh_1() {
+    void *flowState = getFlowState(0, 2);
+    (void)flowState;
+    tick_user_widget_keyboard2(getFlowState(flowState, 0), 7);
+}
+
+void create_screen_qh_2() {
+    void *flowState = getFlowState(0, 3);
+    (void)flowState;
+    lv_obj_t *obj = lv_obj_create(0);
+    objects.qh_2 = obj;
+    lv_obj_set_pos(obj, 0, 0);
+    lv_obj_set_size(obj, 160, 160);
+    lv_obj_add_event_cb(obj, event_handler_cb_qh_2_qh_2, LV_EVENT_ALL, flowState);
+    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    {
+        lv_obj_t *parent_obj = obj;
+        {
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            objects.obj1 = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 160, 160);
+            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            create_user_widget_keyboard1(obj, getFlowState(flowState, 0), 20);
+        }
+    }
+    
+    tick_screen_qh_2();
+}
+
+void tick_screen_qh_2() {
+    void *flowState = getFlowState(0, 3);
+    (void)flowState;
+    tick_user_widget_keyboard1(getFlowState(flowState, 0), 20);
+}
+
+void create_screen_set_page() {
+    void *flowState = getFlowState(0, 4);
+    (void)flowState;
+    lv_obj_t *obj = lv_obj_create(0);
+    objects.set_page = obj;
+    lv_obj_set_pos(obj, 0, 0);
+    lv_obj_set_size(obj, 160, 160);
+    lv_obj_add_event_cb(obj, event_handler_cb_set_page_set_page, LV_EVENT_ALL, flowState);
     {
         lv_obj_t *parent_obj = obj;
         {
@@ -174,104 +278,6 @@ void create_screen_gamepad_page() {
                     }
                 }
             }
-        }
-    }
-    
-    tick_screen_gamepad_page();
-}
-
-void tick_screen_gamepad_page() {
-    void *flowState = getFlowState(0, 1);
-    (void)flowState;
-}
-
-void create_screen_qh() {
-    void *flowState = getFlowState(0, 2);
-    (void)flowState;
-    lv_obj_t *obj = lv_obj_create(0);
-    objects.qh = obj;
-    lv_obj_set_pos(obj, 0, 0);
-    lv_obj_set_size(obj, 160, 160);
-    lv_obj_add_event_cb(obj, event_handler_cb_qh_qh, LV_EVENT_ALL, flowState);
-    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
-    {
-        lv_obj_t *parent_obj = obj;
-        {
-            lv_obj_t *obj = lv_obj_create(parent_obj);
-            objects.obj0 = obj;
-            lv_obj_set_pos(obj, 0, 0);
-            lv_obj_set_size(obj, 160, 160);
-            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_keyboard1(obj, getFlowState(flowState, 0), 7);
-        }
-    }
-    
-    tick_screen_qh();
-}
-
-void tick_screen_qh() {
-    void *flowState = getFlowState(0, 2);
-    (void)flowState;
-    tick_user_widget_keyboard1(getFlowState(flowState, 0), 7);
-}
-
-void create_screen_qh_1() {
-    void *flowState = getFlowState(0, 3);
-    (void)flowState;
-    lv_obj_t *obj = lv_obj_create(0);
-    objects.qh_1 = obj;
-    lv_obj_set_pos(obj, 0, 0);
-    lv_obj_set_size(obj, 160, 160);
-    lv_obj_add_event_cb(obj, event_handler_cb_qh_1_qh_1, LV_EVENT_ALL, flowState);
-    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
-    {
-        lv_obj_t *parent_obj = obj;
-        {
-            lv_obj_t *obj = lv_obj_create(parent_obj);
-            objects.obj1 = obj;
-            lv_obj_set_pos(obj, 0, 0);
-            lv_obj_set_size(obj, 160, 160);
-            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_keyboard2(obj, getFlowState(flowState, 0), 17);
-        }
-    }
-    
-    tick_screen_qh_1();
-}
-
-void tick_screen_qh_1() {
-    void *flowState = getFlowState(0, 3);
-    (void)flowState;
-    tick_user_widget_keyboard2(getFlowState(flowState, 0), 17);
-}
-
-void create_screen_set_page() {
-    void *flowState = getFlowState(0, 4);
-    (void)flowState;
-    lv_obj_t *obj = lv_obj_create(0);
-    objects.set_page = obj;
-    lv_obj_set_pos(obj, 0, 0);
-    lv_obj_set_size(obj, 160, 160);
-    lv_obj_add_event_cb(obj, event_handler_cb_set_page_set_page, LV_EVENT_ALL, flowState);
-    lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLLABLE);
-    lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
-    {
-        lv_obj_t *parent_obj = obj;
-        {
-            lv_obj_t *obj = lv_image_create(parent_obj);
-            lv_obj_set_pos(obj, 30, 30);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_image_set_src(obj, &img_set);
         }
     }
     
@@ -488,6 +494,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -495,7 +502,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             ((lv_obj_t **)&objects)[startWidgetIndex + 1] = obj;
-            lv_obj_set_pos(obj, 20, 95);
+            lv_obj_set_pos(obj, 20, 100);
             lv_obj_set_size(obj, 30, 30);
             lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
@@ -506,6 +513,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -513,7 +521,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             ((lv_obj_t **)&objects)[startWidgetIndex + 2] = obj;
-            lv_obj_set_pos(obj, 90, 30);
+            lv_obj_set_pos(obj, 95, 35);
             lv_obj_set_size(obj, 30, 30);
             lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
@@ -524,6 +532,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -531,7 +540,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             ((lv_obj_t **)&objects)[startWidgetIndex + 3] = obj;
-            lv_obj_set_pos(obj, 60, 65);
+            lv_obj_set_pos(obj, 65, 65);
             lv_obj_set_size(obj, 30, 30);
             lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
@@ -542,6 +551,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -549,7 +559,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             ((lv_obj_t **)&objects)[startWidgetIndex + 4] = obj;
-            lv_obj_set_pos(obj, 90, 95);
+            lv_obj_set_pos(obj, 95, 95);
             lv_obj_set_size(obj, 30, 30);
             lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
@@ -560,6 +570,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -567,7 +578,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
         {
             lv_obj_t *obj = lv_button_create(parent_obj);
             ((lv_obj_t **)&objects)[startWidgetIndex + 5] = obj;
-            lv_obj_set_pos(obj, 120, 65);
+            lv_obj_set_pos(obj, 125, 65);
             lv_obj_set_size(obj, 30, 30);
             lv_obj_set_style_bg_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
             {
@@ -578,6 +589,7 @@ void create_user_widget_keyboard2(lv_obj_t *parent_obj, void *flowState, int sta
                     lv_obj_set_pos(obj, 0, 0);
                     lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
                     lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_fonts, LV_PART_MAIN | LV_STATE_DEFAULT);
                     lv_label_set_text(obj, "");
                 }
             }
@@ -647,14 +659,24 @@ void tick_user_widget_keyboard2(void *flowState, int startWidgetIndex) {
 void change_color_theme(uint32_t theme_index) {
     lv_obj_set_style_bg_color(objects.main, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
     
-    lv_obj_set_style_bg_color(objects.qh, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(objects.gamepad_page, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
     
     lv_obj_set_style_bg_color(objects.qh_1, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
     
-    lv_obj_set_style_bg_color(objects.set_page, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_bg_color(objects.qh_2, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
     
     {
         int startWidgetIndex = 7;
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 0], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 1], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 2], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 3], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 4], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 5], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
+    }
+    
+    {
+        int startWidgetIndex = 20;
         lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 0], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 1], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
         lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 2], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -666,20 +688,10 @@ void change_color_theme(uint32_t theme_index) {
         lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 8], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
     }
     
-    {
-        int startWidgetIndex = 17;
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 0], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 1], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 2], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 3], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 4], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-        lv_obj_set_style_bg_color(((lv_obj_t **)&objects)[startWidgetIndex + 5], lv_color_hex(theme_colors[theme_index][0]), LV_PART_MAIN | LV_STATE_DEFAULT);
-    }
-    
     lv_obj_invalidate(objects.main);
     lv_obj_invalidate(objects.gamepad_page);
-    lv_obj_invalidate(objects.qh);
     lv_obj_invalidate(objects.qh_1);
+    lv_obj_invalidate(objects.qh_2);
     lv_obj_invalidate(objects.set_page);
     lv_obj_invalidate(objects.aa);
 }
@@ -695,8 +707,8 @@ void ui_create_groups() {
     }
 }
 
-static const char *screen_names[] = { "Main", "gamepad_page", "qh", "qh_1", "set_page", "aa" };
-static const char *object_names[] = { "main", "gamepad_page", "qh", "qh_1", "set_page", "aa", "obj0", "obj0__obj0", "obj0__obj1", "obj0__obj2", "obj0__obj3", "obj0__obj4", "obj0__obj5", "obj0__obj6", "obj0__obj7", "obj0__obj8", "obj1", "obj1__obj9", "obj1__obj10", "obj1__obj11", "obj1__obj12", "obj1__obj13", "obj1__obj14", "obj1__obj15", "obj1__obj16", "obj1__obj17", "obj1__obj18", "obj1__obj19", "obj1__obj20" };
+static const char *screen_names[] = { "Main", "gamepad_page", "qh_1", "qh_2", "set_page", "aa" };
+static const char *object_names[] = { "main", "gamepad_page", "qh_1", "qh_2", "set_page", "aa", "obj0", "obj0__obj9", "obj0__obj10", "obj0__obj11", "obj0__obj12", "obj0__obj13", "obj0__obj14", "obj0__obj15", "obj0__obj16", "obj0__obj17", "obj0__obj18", "obj0__obj19", "obj0__obj20", "obj1", "obj1__obj0", "obj1__obj1", "obj1__obj2", "obj1__obj3", "obj1__obj4", "obj1__obj5", "obj1__obj6", "obj1__obj7", "obj1__obj8" };
 static const char *group_names[] = { "keyboard" };
 static const char *style_names[] = { "s1" };
 static const char *theme_names[] = { "light", "dark" };
@@ -711,8 +723,8 @@ typedef void (*tick_screen_func_t)();
 tick_screen_func_t tick_screen_funcs[] = {
     tick_screen_main,
     tick_screen_gamepad_page,
-    tick_screen_qh,
     tick_screen_qh_1,
+    tick_screen_qh_2,
     tick_screen_set_page,
     tick_screen_aa,
 };
@@ -740,8 +752,8 @@ void create_screens() {
     
     create_screen_main();
     create_screen_gamepad_page();
-    create_screen_qh();
     create_screen_qh_1();
+    create_screen_qh_2();
     create_screen_set_page();
     create_screen_aa();
 }

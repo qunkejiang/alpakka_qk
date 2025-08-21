@@ -191,6 +191,10 @@ void Board::Init_USB()
 {
     usb_ = new USB();
 }
+void Board::Init_CPU()
+{
+    cpu_ = new CPU();
+}
 
 Board::Board() {
     Init_NVM();//数据保存
@@ -203,10 +207,10 @@ Board::Board() {
     Init_Rotary();//旋转编码器
     Init_IMU();//IMU
     Init_Haptic();//震动
+    Init_CPU();//CPU任务
     vTaskDelay(pdMS_TO_TICKS(5000));
     Init_USB();//USB
     // // Init_Bluetooth();//蓝牙
-    //Init_CPU();//CPU任务
     // // Init_WEBusb();
     
 }

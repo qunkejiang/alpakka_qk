@@ -12,6 +12,7 @@ void add_style_s1(lv_obj_t *obj);
 void remove_style_s1(lv_obj_t *obj);
 
 
+void groups_init(void);
 
 #ifdef __cplusplus
 }

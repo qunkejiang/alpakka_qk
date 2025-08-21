@@ -15,6 +15,7 @@ protected:
     esp_lcd_panel_io_handle_t panel_io_ = nullptr;
     esp_lcd_panel_handle_t panel_ = nullptr;
     
+    static void Lcd_ui_tick(void *pvParameters);
     void SetupUI();
     bool Lock(int timeout_ms = 0) ;// virtual override
     void Unlock() ;// virtual override

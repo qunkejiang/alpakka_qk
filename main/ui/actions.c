@@ -1,8 +1,6 @@
 
 #include "actions.h"
 
-
-void action_aa(lv_event_t * e)
-{
-
+void action_cs(lv_event_t *e) {
+    // TODO: Implement action keyboard here
 }

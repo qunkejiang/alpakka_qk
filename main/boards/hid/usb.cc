@@ -157,12 +157,7 @@ bool tud_vendor_control_xfer_cb(uint8_t rhport, uint8_t stage, tusb_control_requ
 
 uint16_t tud_hid_get_report_cb(uint8_t instance, uint8_t report_id, hid_report_type_t report_type, uint8_t* buffer, uint16_t reqlen)
 {
-    (void) instance;
-    (void) report_id;
-    (void) report_type;
-    (void) buffer;
-    (void) reqlen;
-
+    ESP_LOGI(TAG, "tud_hid_get_report_cb %d %d %d", instance, report_id, report_type);
     return 0;
 }
 
@@ -228,15 +223,14 @@ void USB::hid_task(void *pvParameters) {
     while (1) {
         tud_task(); // tinyusb task
         hid_report_t report;
-        if(xQueueReceive(*hid_queue_p, &report, 1) == pdPASS)//portMAX_DELAY
+        if(xQueueReceive(*hid_queue_p, &report, 0) == pdPASS)//portMAX_DELAY
         {
-            if (tud_ready()) 
+            if (tud_ready())
             {
                 if(report.report_id==REPORT_XINPUT)
                 {
                 // if (wired) xinput_send_report(&report);
                 // else wireless_send_hid(REPORT_XINPUT, &report, sizeof(report));
-                // hid_set_gamepad_synced();
                 }else
                 //if (tud_hid_ready()) 
                 {
@@ -252,13 +246,14 @@ void USB::hid_task(void *pvParameters) {
                         }
                         printf("\n");
                     }
-                }   
+                    webusb_read();
+                    webusb_flush();
+                }
             }
             free(report.data);
         }else
         {
-                //webusb_read();
-                //webusb_flush();
+            vTaskDelay(pdMS_TO_TICKS(1)); // Yield to other tasks
         }
     }
 }
@@ -278,15 +273,15 @@ USB::USB(void)
         .ext_io_conf = NULL,
         .otg_io_conf = NULL,
     };
-    usb_new_phy(&phy_conf, &phy_handle);
+    //usb_new_phy(&phy_conf, &phy_handle);
 
     tusb_rhport_init_t dev_init = {
         .role = TUSB_ROLE_DEVICE,
         .speed = TUSB_SPEED_AUTO,
     };
-    tusb_init(BOARD_TUD_RHPORT, &dev_init);
+    //tusb_init(BOARD_TUD_RHPORT, &dev_init);
 
     hid_queue = xQueueCreate(4, sizeof(hid_report_t));
-    xTaskCreatePinnedToCore(hid_task, "hid_task", 4096, &hid_queue, 5, NULL, 1);
+    //xTaskCreatePinnedToCore(hid_task, "hid_task", 4096, &hid_queue, 5, NULL, 1);
 }
 

@@ -51,5 +51,7 @@
         "streambuf": "cpp",
         "iosfwd": "cpp",
         "stdexcept": "cpp"
-    }
+    },
+    "idf.flashType": "UART",
+    "idf.portWin": "COM7"
 }

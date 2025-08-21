@@ -18,33 +18,33 @@ void ui_create_groups();
 typedef struct _objects_t {
     lv_obj_t *main;
     lv_obj_t *gamepad_page;
-    lv_obj_t *qh;
     lv_obj_t *qh_1;
+    lv_obj_t *qh_2;
     lv_obj_t *set_page;
     lv_obj_t *aa;
     lv_obj_t *obj0;
-    lv_obj_t *obj0__obj0;
-    lv_obj_t *obj0__obj1;
-    lv_obj_t *obj0__obj2;
-    lv_obj_t *obj0__obj3;
-    lv_obj_t *obj0__obj4;
-    lv_obj_t *obj0__obj5;
-    lv_obj_t *obj0__obj6;
-    lv_obj_t *obj0__obj7;
-    lv_obj_t *obj0__obj8;
+    lv_obj_t *obj0__obj9;
+    lv_obj_t *obj0__obj10;
+    lv_obj_t *obj0__obj11;
+    lv_obj_t *obj0__obj12;
+    lv_obj_t *obj0__obj13;
+    lv_obj_t *obj0__obj14;
+    lv_obj_t *obj0__obj15;
+    lv_obj_t *obj0__obj16;
+    lv_obj_t *obj0__obj17;
+    lv_obj_t *obj0__obj18;
+    lv_obj_t *obj0__obj19;
+    lv_obj_t *obj0__obj20;
     lv_obj_t *obj1;
-    lv_obj_t *obj1__obj9;
-    lv_obj_t *obj1__obj10;
-    lv_obj_t *obj1__obj11;
-    lv_obj_t *obj1__obj12;
-    lv_obj_t *obj1__obj13;
-    lv_obj_t *obj1__obj14;
-    lv_obj_t *obj1__obj15;
-    lv_obj_t *obj1__obj16;
-    lv_obj_t *obj1__obj17;
-    lv_obj_t *obj1__obj18;
-    lv_obj_t *obj1__obj19;
-    lv_obj_t *obj1__obj20;
+    lv_obj_t *obj1__obj0;
+    lv_obj_t *obj1__obj1;
+    lv_obj_t *obj1__obj2;
+    lv_obj_t *obj1__obj3;
+    lv_obj_t *obj1__obj4;
+    lv_obj_t *obj1__obj5;
+    lv_obj_t *obj1__obj6;
+    lv_obj_t *obj1__obj7;
+    lv_obj_t *obj1__obj8;
 } objects_t;
 
 extern objects_t objects;
@@ -52,8 +52,8 @@ extern objects_t objects;
 enum ScreensEnum {
     SCREEN_ID_MAIN = 1,
     SCREEN_ID_GAMEPAD_PAGE = 2,
-    SCREEN_ID_QH = 3,
-    SCREEN_ID_QH_1 = 4,
+    SCREEN_ID_QH_1 = 3,
+    SCREEN_ID_QH_2 = 4,
     SCREEN_ID_SET_PAGE = 5,
     SCREEN_ID_AA = 6,
 };
@@ -64,11 +64,11 @@ void tick_screen_main();
 void create_screen_gamepad_page();
 void tick_screen_gamepad_page();
 
-void create_screen_qh();
-void tick_screen_qh();
-
 void create_screen_qh_1();
 void tick_screen_qh_1();
+
+void create_screen_qh_2();
+void tick_screen_qh_2();
 
 void create_screen_set_page();
 void tick_screen_set_page();

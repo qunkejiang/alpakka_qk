@@ -7,7 +7,7 @@
 extern "C" {
 #endif
 
-extern void action_keyboard(lv_event_t * e);
+extern void action_cs(lv_event_t * e);
 
 
 #ifdef __cplusplus

@@ -17,7 +17,7 @@ static const char *TAG = "mkbd";
 
 void get_matrix_kbd_updata(uint8_t *data)
 {
-    memcpy(data, key_value, config->nr_col_gpios * sizeof(uint8_t));
+    //memcpy(data, key_value, config->nr_col_gpios * sizeof(uint8_t));
 }
 bool matrix_kbd::ScanKeyboardColumns(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data) 
 {    
