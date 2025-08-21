@@ -1,0 +1,11 @@
+## IDF Component Manager Manifest File
+## espressif/esp_tinyusb : ^1.7.6
+dependencies:
+  lvgl/lvgl: "~9.2.2"
+  esp_lvgl_port: "~2.4.4"
+  espressif/esp_lcd_gc9a01: "^2.0.1"
+  espressif/touch_sensor_lowlevel: ^0.9.1~1
+  espressif/tinyusb: "^0.18.0~2"
+  espressif/pwm_audio : ^1.1.2
+  idf:
+    version: ">=5.3"
