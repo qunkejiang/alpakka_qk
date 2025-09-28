@@ -50,7 +50,10 @@
         "stop_token": "cpp",
         "streambuf": "cpp",
         "iosfwd": "cpp",
-        "stdexcept": "cpp"
+        "stdexcept": "cpp",
+        "ui.h": "c",
+        "vars.h": "c",
+        "board.h": "c"
     },
     "idf.flashType": "UART",
     "idf.portWin": "COM7"

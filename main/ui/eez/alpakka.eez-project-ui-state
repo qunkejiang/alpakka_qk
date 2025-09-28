@@ -1,13 +1,13 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[alpakka.eez-project]:/userPages/3",
-    "selectedUserWidgetObject": "[alpakka.eez-project]:/userWidgets/1",
-    "selectedActionObject": "[alpakka.eez-project]:/actions/0",
-    "selectedGlobalVariableObject": "[alpakka.eez-project]:/variables/globalVariables/0",
+    "selectedUserPageObject": "[alpakka.eez-project]:/userPages/9",
+    "selectedUserWidgetObject": "[alpakka.eez-project]:/userWidgets/0",
+    "selectedActionObject": "[alpakka.eez-project]:/actions/7",
+    "selectedGlobalVariableObject": "[alpakka.eez-project]:/variables/globalVariables/1",
     "selectedStyleObject": "[alpakka.eez-project]:/lvglStyles/styles/0",
     "selectedThemeObject": "[alpakka.eez-project]:/themes/0",
-    "selectedThemeColorObject": "[alpakka.eez-project]:/colors/1",
-    "selectedBitmapObject": "[alpakka.eez-project]:/bitmaps/1",
+    "selectedFontObject": "[alpakka.eez-project]:/fonts/0",
+    "selectedBitmapObject": "[alpakka.eez-project]:/bitmaps/4",
     "selectedLvglGroupObject": "[alpakka.eez-project]:/lvglGroups/groups/0",
     "subnavigationSelectedItems": {
       "variables-tab/sub-navigation/selected-item": "Global"
@@ -31,7 +31,7 @@
           },
           {
             "type": "border",
-            "selected": 4,
+            "selected": 1,
             "size": 203.5,
             "location": "right",
             "children": [
@@ -133,7 +133,6 @@
                   "type": "tabset",
                   "id": "#f6ba8668-ba14-49e4-96c7-3bc803911d76",
                   "weight": 1,
-                  "selected": 2,
                   "enableClose": false,
                   "children": [
                     {
@@ -165,7 +164,7 @@
                 {
                   "type": "tabset",
                   "id": "#ca2e9b1c-8ef8-4811-8d59-ccb81cc1cdd3",
-                  "weight": 1,
+                  "weight": 1.2,
                   "enableClose": false,
                   "children": [
                     {
@@ -181,7 +180,7 @@
                 {
                   "type": "tabset",
                   "id": "#c3fe6795-7543-4429-9bb2-4b9a20c75a48",
-                  "weight": 1,
+                  "weight": 0.8,
                   "enableClose": false,
                   "children": [
                     {
@@ -199,14 +198,69 @@
             {
               "type": "tabset",
               "id": "EDITORS",
-              "weight": 49.70883643743399,
-              "selected": 1,
+              "weight": 50.934029225224776,
+              "selected": 4,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#83de82d6-37e1-4b8f-8a38-899e5c88386a",
+                  "id": "#7a761305-c950-4446-85a7-14337f1a378d",
+                  "name": "menu5_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/8",
+                    "permanent": false
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#ce8178b8-df8e-4e29-a191-9aae8d29e2a7",
+                  "name": "generic_kb_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/2",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#25cf5b0d-91de-4f58-8b6f-e262832d174e",
+                  "name": "touch_calibration1_1",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/actions/7",
+                    "permanent": false
+                  },
+                  "icon": "material:code"
+                },
+                {
+                  "type": "tab",
+                  "id": "#ed896d1d-8624-4b91-95c7-92c66c724646",
+                  "name": "status_bar",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userWidgets/0",
+                    "permanent": true
+                  },
+                  "icon": "svg:user_widget"
+                },
+                {
+                  "type": "tab",
+                  "id": "#dbbffbb8-64cc-45d4-9990-5d5ba2efff80",
+                  "name": "menu6_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/9",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#d400db19-cae0-4677-bfb7-e54ec207eb97",
                   "name": "Settings",
                   "component": "editor",
                   "config": {
@@ -218,23 +272,34 @@
                 },
                 {
                   "type": "tab",
-                  "id": "#af90c027-3526-41ec-a0aa-57cc94667ce5",
-                  "name": "Main",
+                  "id": "#44765f13-2cad-480d-9431-851f84dfd798",
+                  "name": "ali",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[alpakka.eez-project]:/userPages/0",
+                    "objectPath": "[alpakka.eez-project]:/fonts/0",
+                    "permanent": true
+                  },
+                  "icon": "material:font_download"
+                },
+                {
+                  "type": "tab",
+                  "id": "#e8d98389-c76f-4720-819a-92412ceada67",
+                  "name": "menu7_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/10",
                     "permanent": true
                   },
                   "icon": "svg:page"
                 },
                 {
                   "type": "tab",
-                  "id": "#c747a65e-4b9d-4bd0-8044-aaf14e897cce",
-                  "name": "qh_1",
+                  "id": "#97bb9436-f1bb-47dc-99b9-2bccc2c99db3",
+                  "name": "Main",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[alpakka.eez-project]:/userPages/2",
-                    "permanent": false
+                    "objectPath": "[alpakka.eez-project]:/userPages/0",
+                    "permanent": true
                   },
                   "icon": "svg:page"
                 }
@@ -244,12 +309,12 @@
             {
               "type": "row",
               "id": "#67ec6cee-9210-4a8d-9774-43fa4e35e352",
-              "weight": 29.183897521332213,
+              "weight": 27.958704733541428,
               "children": [
                 {
                   "type": "tabset",
                   "id": "#987768c6-1314-40b9-95ad-bd3c45df932c",
-                  "weight": 1.5756302521008403,
+                  "weight": 2.0588235294117645,
                   "children": [
                     {
                       "type": "tab",
@@ -264,7 +329,7 @@
                 {
                   "type": "tabset",
                   "id": "#5da7dc73-065a-4c36-9fc9-1114d551059a",
-                  "weight": 1.4243697478991597,
+                  "weight": 0.9411764705882353,
                   "children": [
                     {
                       "type": "tab",
@@ -486,29 +551,17 @@
             {
               "type": "tabset",
               "id": "RUNTIME-EDITORS",
-              "weight": 0.6488693467336684,
-              "selected": 1,
+              "weight": 0.43920765027322406,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
                 {
                   "type": "tab",
-                  "id": "#97b4b154-308b-42ea-92a3-dc748a0a05ee",
-                  "name": "jianpan1",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[alpakka.eez-project]:/userWidgets/0",
-                    "permanent": false
-                  },
-                  "icon": "svg:user_widget"
-                },
-                {
-                  "type": "tab",
                   "id": "#fd7097d1-4929-4e04-8b70-1519384fa6ab",
-                  "name": "qh_1",
+                  "name": "Main",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[alpakka.eez-project]:/userPages/3",
+                    "objectPath": "[alpakka.eez-project]:/userPages/0",
                     "permanent": false
                   },
                   "icon": "svg:page"
@@ -516,7 +569,7 @@
                 {
                   "type": "tab",
                   "id": "#15b2fab0-67ba-4441-92e3-ad69285c632c",
-                  "name": "gamepad_page",
+                  "name": "generic_page",
                   "component": "editor",
                   "config": {
                     "objectPath": "[alpakka.eez-project]:/userPages/1",
@@ -530,8 +583,8 @@
             {
               "type": "row",
               "id": "#c903049d-df33-4fc3-b904-6d1f22c09b01",
-              "weight": 0.35113065326633164,
-              "width": 559,
+              "weight": 0.5607923497267759,
+              "width": 821,
               "children": [
                 {
                   "type": "tabset",
@@ -655,6 +708,7 @@
             {
               "type": "tabset",
               "id": "#f49ba765-40f2-4cd0-839a-f28b17c68f91",
+              "weight": 150.83798882681563,
               "enableDrop": false,
               "enableDrag": false,
               "enableClose": false,
@@ -672,6 +726,7 @@
             {
               "type": "tabset",
               "id": "#63ed77dc-60e3-4bd8-88bf-b40a6c1899ff",
+              "weight": 49.16201117318436,
               "enableDrop": false,
               "enableDrag": false,
               "enableClose": false,
@@ -899,8 +954,7 @@
                       "component": "themes",
                       "enableClose": false
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -916,7 +970,8 @@
                       "component": "colors",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 }
               ]
             }
@@ -1017,8 +1072,7 @@
                       "component": "groups",
                       "enableClose": false
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1036,7 +1090,8 @@
                       "component": "order",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 }
               ]
             }
@@ -1050,14 +1105,19 @@
   "objects": {
     "[alpakka.eez-project]:/userPages/0[flow-state]": {
       "selection": {
-        "0": {}
+        "0": {
+          "0": {}
+        },
+        "1": {
+          "$selected": true
+        }
       },
       "transform": {
         "translate": {
-          "x": -118.09999999999997,
-          "y": -16.550007311503144
+          "x": -254.65453251755798,
+          "y": -157.67219021760525
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": true,
@@ -1069,59 +1129,68 @@
     "[alpakka.eez-project]:/userPages/1[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
-        }
+          "0": {},
+          "1": {}
+        },
+        "1": {}
       },
       "transform": {
         "translate": {
-          "x": -144,
-          "y": -89
+          "x": -173.8290086816642,
+          "y": -131.49479822368164
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
-        "isEditorActive": false,
+        "isEditorActive": true,
         "position": 0,
         "secondToPx": 200,
         "scrollLeft": 0
       }
     },
     "[alpakka.eez-project]:/lvglStyles/styles[tree-state]": {
-      "0": {}
+      "0": {},
+      "1": {
+        "$selected": true
+      },
+      "2": {
+        "$selected": true
+      }
     },
     "[alpakka.eez-project]:/userPages/2[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
-        }
+          "0": {},
+          "6": {
+            "$selected": true
+          }
+        },
+        "1": {}
       },
       "transform": {
         "translate": {
-          "x": -187.52499999999995,
-          "y": -72.81250000000006
+          "x": -304.5966851036553,
+          "y": -91.817349138839
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
-        "isEditorActive": false,
-        "position": 0,
+        "isEditorActive": true,
+        "position": 1,
         "secondToPx": 200,
         "scrollLeft": 0
       }
     },
     "[alpakka.eez-project]:/userWidgets/0[flow-state]": {
       "selection": {
-        "0": {
-          "$selected": true
-        },
-        "7": {}
+        "0": {}
       },
       "transform": {
         "translate": {
-          "x": -80,
-          "y": -80
+          "x": -180.61111867692745,
+          "y": -116.28953645494265
         },
-        "scale": 1
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": false,
@@ -1133,15 +1202,18 @@
     "[alpakka.eez-project]:/userPages/3[flow-state]": {
       "selection": {
         "0": {
-          "0": {}
-        }
+          "0": {
+            "0": {}
+          }
+        },
+        "5": {}
       },
       "transform": {
         "translate": {
-          "x": -80,
-          "y": -80
+          "x": -233.7452641223103,
+          "y": -66.852958139563
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": false,
@@ -1155,9 +1227,9 @@
       "transform": {
         "translate": {
           "x": -80,
-          "y": 20
+          "y": -180
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": false,
@@ -1178,14 +1250,17 @@
     },
     "[alpakka.eez-project]:/userPages/4[flow-state]": {
       "selection": {
-        "0": {}
+        "0": {
+          "0": {},
+          "1": {}
+        }
       },
       "transform": {
         "translate": {
-          "x": -187.52499999999995,
-          "y": -72.81250000000006
+          "x": -186.99245144685125,
+          "y": -141.95267237921587
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": false,
@@ -1195,13 +1270,21 @@
       }
     },
     "[alpakka.eez-project]:/userPages/5[flow-state]": {
-      "selection": {},
+      "selection": {
+        "0": {
+          "0": {},
+          "1": {},
+          "3": {},
+          "5": {}
+        },
+        "1": {}
+      },
       "transform": {
         "translate": {
-          "x": -80,
-          "y": -80
+          "x": -34.580108083089186,
+          "y": -122.7899408086142
         },
-        "scale": 0.8
+        "scale": 0.9
       },
       "timeline": {
         "isEditorActive": false,
@@ -1219,6 +1302,201 @@
         },
         "scale": 1
       }
+    },
+    "[alpakka.eez-project]:/userPages/6[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {
+            "$selected": true
+          }
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": 20.00000076293925,
+          "y": -95.83333435058593
+        },
+        "scale": 0.9
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[alpakka.eez-project]:/userPages/7[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {},
+          "1": {},
+          "2": {
+            "0": {}
+          }
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -95.4882388095251,
+          "y": -83.49228264263691
+        },
+        "scale": 0.9
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[alpakka.eez-project]:/userPages/8[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {},
+          "1": {}
+        },
+        "1": {},
+        "2": {},
+        "3": {},
+        "4": {
+          "$selected": true
+        },
+        "5": {}
+      },
+      "transform": {
+        "translate": {
+          "x": -362.1666772842408,
+          "y": -90
+        },
+        "scale": 0.9
+      },
+      "timeline": {
+        "isEditorActive": true,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 4
+      }
+    },
+    "[alpakka.eez-project]:/userPages/9[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {},
+          "4": {},
+          "7": {}
+        },
+        "1": {},
+        "7": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -7.634139951303813,
+          "y": -215.51042261315206
+        },
+        "scale": 0.9
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[alpakka.eez-project]:/actions/2[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/3[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 284.9999938964848,
+          "y": -43.33333225250244
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/4[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/5[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/6[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/7[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": -136.66667633056642,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/actions/8[flow-state]": {
+      "selection": {},
+      "transform": {
+        "translate": {
+          "x": 0,
+          "y": 0
+        },
+        "scale": 1
+      }
+    },
+    "[alpakka.eez-project]:/userPages/10[flow-state]": {
+      "selection": {
+        "0": {
+          "0": {
+            "$selected": true
+          },
+          "2": {},
+          "3": {},
+          "5": {}
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -302.07361131147945,
+          "y": -226.18791709338444
+        },
+        "scale": 0.9
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
     }
   },
   "activeOutputSection": 0,
@@ -1230,17 +1508,19 @@
   "pageEditorFrontFace": false,
   "pageRuntimeFrontFace": true,
   "breakpoints": {},
-  "watchExpressions": [],
+  "watchExpressions": [
+    "counter"
+  ],
   "showComponentDescriptions": true,
   "logsPanelFilter": "all",
   "selectedStylePropertyName": "",
-  "lvglPart": "INDICATOR",
-  "lvglState": "CHECKED",
+  "lvglPart": "MAIN",
+  "lvglState": "DEFAULT",
   "lvglExpandedPropertiesGroup": [
-    "BORDER"
+    "TEXT"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,
-  "flowZoom": 0.8,
+  "flowZoom": 0.9,
   "implementationLanguage": "C"
 }

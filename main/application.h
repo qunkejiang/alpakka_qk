@@ -7,14 +7,15 @@
 #include <esp_log.h>
 #include "board.h"
 
-typedef struct sensor_data_t
+typedef struct 
 {
-    int16_t adc_value[4];
-    uint32_t touch_value = 0;
+    key_matrix_t key_matrix;
+    float adc_value[4];
+    touch_data_t touch_data;
     int rotary_count = 0;
-    sensorData_t Data;
-    uint8_t axp_data;
-};
+    Imu_Data_t Data;
+    axp2101_data_t axp_data;
+}sensor_data_t;
 
 
 class Application {

@@ -8,6 +8,7 @@ extern "C" {
 #endif
 
 // Style: s1
+lv_style_t *get_style_s1_MAIN_DEFAULT();
 void add_style_s1(lv_obj_t *obj);
 void remove_style_s1(lv_obj_t *obj);
 

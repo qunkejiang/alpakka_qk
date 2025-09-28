@@ -6,9 +6,9 @@ set(SOURCES "main.cc"
 set(INCLUDE_DIRS "."  )
 
 # 添加板级公共文件
-file(GLOB BOARD_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/boards/*.cc)
+file(GLOB BOARD_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/bsp/*.cc)
 list(APPEND SOURCES ${BOARD_COMMON_SOURCES})
-file(GLOB BOARD_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/boards/hid/*.cc)
+file(GLOB BOARD_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/bsp/hid/*.cc)
 list(APPEND SOURCES ${BOARD_COMMON_SOURCES})
 file(GLOB UI_COMMON_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ui/*.c)
 list(APPEND SOURCES ${UI_COMMON_SOURCES})
@@ -19,8 +19,8 @@ list(APPEND SOURCES ${IMAGE_SOURCES})
 file(GLOB FONTS_SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/ui/fonts/*.c)
 list(APPEND SOURCES ${FONTS_SOURCES})
 
-list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards)
-list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/boards/hid)
+list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/bsp)
+list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/bsp/hid)
 list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/ui)
 
 
@@ -32,7 +32,7 @@ idf_component_register(SRCS ${SOURCES}
 
 
 idf_component_get_property(tusb_lib espressif__tinyusb COMPONENT_LIB)
-target_include_directories(${tusb_lib} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/boards/hid)      
+target_include_directories(${tusb_lib} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/bsp/hid)      
 
 spiffs_create_partition_image(storage ../spiffs_img FLASH_IN_PROJECT)
                     

@@ -6,36 +6,36 @@
 #include "esp_lvgl_port.h"
 // you should initialize your input device
 // before calling "ui_create_groups()"
+
 lv_indev_t *indev_keypad;
-// ...lv_indev_drv_t *indev_drv, lv_indev_data_t *data
+QueueHandle_t groups_queue;
+static const char *TAG = "groups";
+
+void groups_send_key(group_msg_t report)
+{
+    bool result = xQueueSend(groups_queue, &report, 0);
+    if(result != pdPASS)
+    {
+        ESP_LOGI(TAG, "Key send failed: %d %d", report.key, report.state);
+    }
+}
 
 void lvgl_port_read_kb(lv_indev_t * indev, lv_indev_data_t * data)
 {
-    //ESP_LOGI("groups","lvgl_port_read_kb");
-
+    group_msg_t report;
+    if(xQueueReceive(groups_queue, &report, 0) == pdPASS)
+    {
+        data->key = report.key;
+        data->state = report.state;
+        ESP_LOGI(TAG, "Key : %d %d", report.key, report.state);
+    }
 }
-// void lvgl_port_read_kb()
-// {
-//     // assert(indev_drv);
-//     // lvgl_port_usb_hid_ctx_t *ctx = (lvgl_port_usb_hid_ctx_t *)indev_drv->user_data;
-//     // assert(ctx);
-
-//     // data->key = ctx->kb.last_key;
-//     // if (ctx->kb.pressed) {
-//     //     data->state = LV_INDEV_STATE_PRESSED;
-//     //     ctx->kb.pressed = false;
-//     // } else {
-//     //     data->state = LV_INDEV_STATE_RELEASED;
-//     //     ctx->kb.last_key = 0;
-//     // }
-//     //ESP_LOGI("lvgl_port_read_kb", "key: %d, state: %d", data->key, data->state);
-
-// }
 
 void groups_init()
 {
     
     ESP_LOGI("groups","groups_init");
+    groups_queue = xQueueCreate(8, sizeof(group_msg_t));
     // call this before "ui_init()"
     indev_keypad = lv_indev_create();
     lv_indev_set_type(indev_keypad, LV_INDEV_TYPE_KEYPAD);
@@ -45,6 +45,6 @@ void groups_init()
 
     ui_create_groups();
     // set group for your input device
-    lv_indev_set_group(indev_keypad, groups.keyboard);
+    lv_indev_set_group(indev_keypad, groups.keyboard_groups);
 
 }
