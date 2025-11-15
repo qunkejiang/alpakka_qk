@@ -2,47 +2,41 @@
 // Copyright (C) 2022, Input Labs Oy.
 #pragma once    
 
-#include <string>
-#include "config.h"
+#include <cstdint>
+#include "board_config.h"
 #include "ctrl.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-    #define PIN_THUMBSTICK_RY 26
-    #define PIN_THUMBSTICK_RX 27
-    #define PIN_THUMBSTICK_LX 29
-    #define PIN_THUMBSTICK_LY 28
-    #define PIN_SELECT_1 114
-    #define PIN_SELECT_2 110
-    #define PIN_DPAD_LEFT 104
-    #define PIN_DPAD_RIGHT 101
-    #define PIN_DPAD_UP 103
-    #define PIN_DPAD_DOWN 100
-    #define PIN_L1 102
-    #define PIN_L2 115
-    #define PIN_L3 109
-    #define PIN_L4 108
-    #define PIN_PCBGEN_0 111
-    #define PIN_PCBGEN_1 113
-    #define PIN_START_1 200
-    #define PIN_START_2 201
-    #define PIN_A 215
-    #define PIN_B 210
-    #define PIN_X 213
-    #define PIN_Y 211
-    #define PIN_DHAT_LEFT 203
-    #define PIN_DHAT_RIGHT 205
-    #define PIN_DHAT_UP 206
-    #define PIN_DHAT_DOWN 204
-    #define PIN_R1 212
-    #define PIN_R2 214
-    #define PIN_R3 202
-    #define PIN_R4 207
+#define ACTIONS_LEN 4
+typedef uint8_t Actions[ACTIONS_LEN];
 
-    #define PIN_VIRTUAL 254 
-    #define PIN_TOUCH_IN 12     // 13 (rc1)
-    #define PIN_NONE 255 // Buttons without any hardware associated to them.
+#define BUTTON_SELECT_1 0x02
+#define BUTTON_SELECT_2 0x22
+#define BUTTON_START_1 0x32
+#define BUTTON_START_2 0x12
+#define BUTTON_DPAD_LEFT 0x20
+#define BUTTON_DPAD_RIGHT 0x10
+#define BUTTON_DPAD_UP 0x30
+#define BUTTON_DPAD_DOWN 0x00
+#define BUTTON_L1 0x03
+#define BUTTON_L2 0x33
+#define BUTTON_L3 0x13
+#define BUTTON_L4 0x23
+#define BUTTON_A 0x01
+#define BUTTON_B 0x21
+#define BUTTON_X 0x11
+#define BUTTON_Y 0x31
+#define BUTTON_R1 0x34
+#define BUTTON_R2 0x24
+#define BUTTON_R3 0x14
+#define BUTTON_R4 0x04
+
+#define BUTTON_HOME 252
+#define BUTTON_TOUCH_IN 253    
+#define BUTTON_VIRTUAL 254 
+#define BUTTON_NONE 255 // Buttons without any hardware associated to them.
 
 
 typedef enum _ButtonMode {
@@ -65,7 +59,7 @@ struct Button_struct {
     bool state_secondary;
     bool state_terciary;
     bool emitted_primary;
-//     bool virtual_press;
+    bool virtual_press;
     bool timestamps_updated;
     uint64_t press_timestamp;
     uint64_t press_timestamp_prev;

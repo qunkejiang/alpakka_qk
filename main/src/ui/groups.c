@@ -2,21 +2,19 @@
 #include "screens.h" // pick group declarations from here
 #include "groups.h" // pick group declarations from here
 
-#include <esp_log.h>
 #include "esp_lvgl_port.h"
 // you should initialize your input device
 // before calling "ui_create_groups()"
 
 lv_indev_t *indev_keypad;
 QueueHandle_t groups_queue;
-static const char *TAG = "groups";
 
 void groups_send_key(group_msg_t report)
 {
     bool result = xQueueSend(groups_queue, &report, 0);
     if(result != pdPASS)
     {
-        ESP_LOGI(TAG, "Key send failed: %d %d", report.key, report.state);
+        //logging::warn(TAG, "Key send failed: %d %d\n", report.key, report.state);
     }
 }
 
@@ -27,14 +25,14 @@ void lvgl_port_read_kb(lv_indev_t * indev, lv_indev_data_t * data)
     {
         data->key = report.key;
         data->state = report.state;
-        ESP_LOGI(TAG, "Key : %d %d", report.key, report.state);
+        //logging::info(TAG, "Key : %d %d\n", report.key, report.state);
     }
 }
 
 void groups_init()
 {
     
-    ESP_LOGI("groups","groups_init");
+    //logging::info(TAG, "groups_init\n");
     groups_queue = xQueueCreate(8, sizeof(group_msg_t));
     // call this before "ui_init()"
     indev_keypad = lv_indev_create();

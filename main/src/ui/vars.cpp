@@ -1,4 +1,5 @@
 #include "vars.h"
+#include "board.h"
 
 bool keymouse_aa;
 bool get_var_keymouse_aa() {
@@ -40,12 +41,20 @@ void set_var_usb_state(bool value) {
     usb_state = value;
 }
 
-int32_t mode_state;
-int32_t get_var_mode_state() {
+bool get_var_kbm_state() {
+    CtrlProfile *profile = Board::get_profile(Board::get_nvm_data()->profile_index);
+    bool mode_state = (profile->sections[SECTION_RSTICK_SETTINGS].thumbstick.mode == THUMBSTICK_MODE_ALPHANUMERIC) ||
+                      (profile->sections[SECTION_LSTICK_SETTINGS].thumbstick.mode == THUMBSTICK_MODE_ALPHANUMERIC);
     return mode_state;
 }
-void set_var_mode_state(int32_t value) {
-    mode_state = value;
+void set_var_kbm_state(bool value) {
+}
+
+int32_t get_var_joystick_calibration() {  
+    return Board::GetInstance().joystick_->calibration_step;
+}
+void set_var_joystick_calibration(int32_t value) {
+    Board::GetInstance().joystick_->calibration_step = value;
 }
 
 int32_t joystick_calibration1;
@@ -82,10 +91,10 @@ void set_var_joystick_calibration4(int32_t value) {
 
 int32_t imu_calibration;
 int32_t get_var_imu_calibration() {
-    return imu_calibration;
+    return Board::GetInstance().imu_->calibration_step;
 }
 void set_var_imu_calibration(int32_t value) {
-    imu_calibration = value;
+    Board::GetInstance().imu_->calibration_step = value;
 }
 int32_t touch_calibration_pv;
 int32_t get_var_touch_calibration_pv() {

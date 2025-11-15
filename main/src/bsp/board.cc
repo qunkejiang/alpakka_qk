@@ -1,10 +1,12 @@
 #include "board.h"
-#include <esp_log.h>
+#include "logging.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <driver/i2c_master.h>
 
 
-#define TAG "board"
 
-static const gc9a01_lcd_init_cmd_t gc9d01n_lcd_init_cmds[] = {
+const gc9a01_lcd_init_cmd_t gc9d01n_lcd_init_cmds[] = {
     //  {cmd, { data }, data_size, delay_ms}
     // Enable Inter Register
     {0xFE, (uint8_t[]){0x00}, 0, 0},
@@ -58,7 +60,9 @@ static const gc9a01_lcd_init_cmd_t gc9d01n_lcd_init_cmds[] = {
 };
 void Board::Init_LCD_Display() {
 
-    spi_bus_config_t buscfg = {};
+    logging::info( "Init GC9D01N\n");
+    spi_bus_config_t buscfg;
+    memset(&buscfg, 0, sizeof(buscfg));
     buscfg.mosi_io_num = DISPLAY_MOSI;
     buscfg.miso_io_num = GPIO_NUM_NC;
     buscfg.sclk_io_num = DISPLAY_SCLK;
@@ -70,8 +74,8 @@ void Board::Init_LCD_Display() {
     esp_lcd_panel_io_handle_t panel_io = nullptr;
     esp_lcd_panel_handle_t panel = nullptr;
 
-    ESP_LOGD(TAG, "Install panel IO");
-    esp_lcd_panel_io_spi_config_t io_config = {};
+    esp_lcd_panel_io_spi_config_t io_config;
+    memset(&io_config, 0, sizeof(io_config));
     io_config.cs_gpio_num = DISPLAY_CS;
     io_config.dc_gpio_num = DISPLAY_DC;
     io_config.spi_mode = 0;
@@ -81,7 +85,6 @@ void Board::Init_LCD_Display() {
     io_config.lcd_param_bits = 8;
     ESP_ERROR_CHECK(esp_lcd_new_panel_io_spi(DISPLAY_SPI, &io_config, &panel_io));
 
-    ESP_LOGI(TAG, "Init GC9D01N");
     gc9a01_vendor_config_t vendor_config = {
         .init_cmds = gc9d01n_lcd_init_cmds,
         .init_cmds_size = sizeof(gc9d01n_lcd_init_cmds) / sizeof(gc9a01_lcd_init_cmd_t),
@@ -97,7 +100,7 @@ void Board::Init_LCD_Display() {
     esp_lcd_panel_invert_color(panel, false);
     esp_lcd_panel_swap_xy(panel, DISPLAY_SWAP_XY);
     esp_lcd_panel_mirror(panel, DISPLAY_MIRROR_X, DISPLAY_MIRROR_Y);
-
+ 
     display_ = new SpiLcdDisplay(panel_io, panel,
                                 DISPLAY_WIDTH, DISPLAY_HEIGHT, DISPLAY_OFFSET_X, DISPLAY_OFFSET_Y, DISPLAY_MIRROR_X,
                                 DISPLAY_MIRROR_Y, DISPLAY_SWAP_XY
@@ -158,13 +161,13 @@ void Board::Init_Touch() {
     };
     touch_ = new Touch(&config);
 }
-void Board::Init_Rotary() 
+void Board::Init_Pcnt() 
 {
-    rotary_ = new Rotary(EC_P, EC_N);
+    pcnt_ = new Pcnt(EC_P, EC_N);
 }
 void Board::Init_IMU() 
 {
-    imu_config_t config ={
+    imu_config_t config ={ 
         .timer_num = ICM_TIMER, // LEDC timer number
         .channel = ICM_TIMER_CHANNEL0, // LEDC channel number
         .host = ICM_SPI, // SPI host
@@ -195,33 +198,48 @@ void Board::Init_CPU()
 {
     cpu_ = new CPU();
 }
+void Board::Init_hid()
+{
+    hid_ = new hid();
+}
 void Board::Init_profile()
 {
-    profile_ = new profile(nvm_->config_profiles, nvm_->nvm_data.mode);
+    profile_ = new profile(Board::get_profile(nvm_->nvm_data.profile_index));
 }
-Board::Board() {
+
+
+void Board::Init() {
+    Init_Matrix_Keyboard();//矩阵键盘
+    do
+    {
+        vTaskDelay(pdMS_TO_TICKS(100));
+    } while ( keyboard_->key_value[BUTTON_START_2>>4]&(1<<(BUTTON_START_2&0xf)));
     Init_NVM();//数据保存
+    Init_USB();//USB
+    Init_hid();//HID
     Init_Axp2101();//电源控制
     Init_LCD_Display();//屏幕
     Init_Backlight();//背光
     Init_Joystick();//摇杆
-    Init_Matrix_Keyboard();//矩阵键盘
     Init_Touch();//触摸按键
-    Init_Rotary();//旋转编码器
+    Init_Pcnt();//旋转编码器
     Init_IMU();//IMU
     Init_Haptic();//震动
     Init_CPU();//CPU任务
-    Init_profile();
-
-
-    vTaskDelay(pdMS_TO_TICKS(5000));
-    Init_USB();//USB
-    // // Init_WEBusb();
     // // Init_Bluetooth();//蓝牙
+    Init_profile();//配置文件
     
+    logging::info("Board Init Finish\n");
 }
+
+
 
 
 // W (30707) board: INTERNAL RAM left 387636B/403536B 15900B,min:382936B
 // W (30713) board: SPI      RAM left 2093928B/2097152B 3224B,min:2093928B
+// W (20846) CPU: INTERNAL RAM left 298479B/428087B 129608B,min:293895B
+// W (20847) CPU: SPI      RAM left 1995432B/2097152B 101720B,min:1993952B
+// W (20839) CPU: INTERNAL RAM left 302779B/428087B 125308B,min:302375B
+// W (20840) CPU: SPI      RAM left 1992828B/2097152B 104324B,min:1992828B
+
 

@@ -1,34 +1,61 @@
 #include "application.h"
-#include "board.h"
-#include "ui_handle.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <freertos/semphr.h>
+#include "ui.h"
+#include "screens.h"
 
-#define TAG "Application"
 
 
-void Application::periodic_sensor_read_task(void *pvParameters) {
-    Board* board = static_cast<Board*>(pvParameters);
-    // sensor_data_t sensor_data;
-    // sensor_data.key_matrix.key_edge = (uint8_t *)calloc(board->keyboard_->mkbd->nr_col_gpios, sizeof(uint8_t));
-    // sensor_data.key_matrix.key_value = (uint8_t *)calloc(board->keyboard_->mkbd->nr_col_gpios, sizeof(uint8_t));
-    
+void Application::sensor_task() {
     while (1) {
         board->touch_->update(board->nvm_->nvm_data.touch_trigger);
         board->imu_->update(board->nvm_->nvm_data.gyro_offset);
-        // board->axp2101_->Update(&sensor_data.axp_data);
-        // board->joystick_->GetADCValues(sensor_data.adc_value,board->nvm_->nvm_data.Joystick_offset,board->nvm_->nvm_data.Joystick_gain);
-        // board->rotary_->GetPulseCounterValue(&sensor_data.rotary_count);
-        // board->keyboard_->get_matrix_kbd(&sensor_data.key_matrix);
+        board->joystick_->update(board->nvm_->nvm_data.Joystick_offset);
+        board->axp2101_->update();
+        board->pcnt_->update();
 
-        board->profile_->report();
-        //hid_periodic_hanld(&sensor_data, board);
-        //ui_periodic_handle(&sensor_data, board);
+
+        int16_t screenId = eez_flow_get_current_screen();
+        if( (screenId==SCREEN_ID_GENERIC_KB_PAGE) || (screenId==SCREEN_ID_GENERIC_PAGE) )
+        {
+            xSemaphoreTake(semaphore_hid, portMAX_DELAY);
+            board->profile_->report();
+            xSemaphoreGive(semaphore_hid);
+        }
+
+        xSemaphoreGive(semaphore_sensor);
+        UI_Handle::report();
         vTaskDelay(1); 
+    }
+}
+
+void Application::hid_task() {
+    while (1) {
+        xSemaphoreTake(semaphore_sensor, portMAX_DELAY);
+        
+        xSemaphoreTake(semaphore_hid, portMAX_DELAY);
+        board->hid_->report_wired();
+        xSemaphoreGive(semaphore_hid);
     }
 }
 
 void Application::Start()
 {
-    auto& board = Board::GetInstance();
-    xTaskCreatePinnedToCore(periodic_sensor_read_task, "sensor_read_task", 4096, &board, 4, NULL, 0);
+    board = &Board::GetInstance();
+    board->Init();
+    semaphore_sensor = xSemaphoreCreateBinary();
+    semaphore_hid = xSemaphoreCreateBinary();
+    xSemaphoreGive(semaphore_hid);
+    
+    xTaskCreatePinnedToCore([](void* arg) {
+        ((Application*)arg)->sensor_task();
+        vTaskDelete(NULL);
+    }, "sensor_task", 4096, this, 4, NULL, 0);
+    
+    xTaskCreatePinnedToCore([](void* arg) {
+        ((Application*)arg)->hid_task();
+        vTaskDelete(NULL);
+    }, "hid_task", 4096, this, 5, NULL, 1);
 }
 

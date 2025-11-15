@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include "board.h"
+
 #define XINPUT_REPORT_SIZE 20
 
 typedef struct __packed _XInputReport {
@@ -20,4 +22,4 @@ typedef struct __packed _XInputReport {
 } XInputReport;
 
 bool xinput_send_report(XInputReport *report);
-void xinput_receive_report();
+// void xinput_receive_report();

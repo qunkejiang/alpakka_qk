@@ -14,7 +14,10 @@ void Touch::update(uint32_t trigger)
         data.touch_status = false;
     }
 }
-
+bool Touch::is_pressed()
+{
+    return data.touch_status;//;
+}
 
 Touch::Touch(touch_lowlevel_config_t *config)
 {

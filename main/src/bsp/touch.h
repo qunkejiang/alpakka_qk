@@ -16,6 +16,7 @@ private:
     uint8_t channel;
 public:
     touch_data_t data;
+    bool is_pressed();
     void update(uint32_t trigger);
     Touch(touch_lowlevel_config_t *config);
     ~Touch();

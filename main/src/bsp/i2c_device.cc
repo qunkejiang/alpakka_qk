@@ -1,8 +1,7 @@
 #include "i2c_device.h"
 
-#include <esp_log.h>
+#include "logging.h"
 
-#define TAG "I2cDevice"
 
 
 I2cDevice::I2cDevice(i2c_master_bus_config_t i2c_bus_cfg, uint8_t addr) {

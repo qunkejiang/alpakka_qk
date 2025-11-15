@@ -2,10 +2,9 @@
 #include "axp2101reg.h"
 #include "board.h"
 
-#include <esp_log.h>
+#include "logging.h"
 #include "driver/gpio.h"
 
-#define TAG "Axp2101"
 
 
 
@@ -60,35 +59,52 @@ int Axp2101::GetBatteryLevel() {
     return ReadReg(AXP2101_BAT_PERCENT_DATA);
 }
 
-void Axp2101::Update(axp2101_data_t *data)
+void Axp2101::update()
 {
-    data->event = 0;
+    data.event = 0;
     if(gpio_get_level(irq_num) == 0)
     {
         uint8_t buffer[3];
         ReadRegs(AXP2101_INTSTS1, buffer,3);
         for (size_t i = 0; i < 3; i++)
         {
-            ESP_LOGI(TAG, "INTSTS[%d]: 0x%02x", i, buffer[i]);
             if(buffer[i])
+            {
+                logging::debug("axp intsts[%d]: 0x%02x\n", i, buffer[i]);
                 WriteReg(AXP2101_INTSTS1+i, buffer[i]);
+            }
+        }
+        if(buffer[1]&0x80)
+        {
+            data.event |= VBUS_INSERT; 
+        }
+        if(buffer[1]&0x40)
+        {
+            data.event |= VBUS_REMOVE; 
         }
         if(buffer[1]&0x08)
-            data->event |= SHORT_PRESS; 
-        if(buffer[1]&0x80)
-            data->event |= VBUS_INSERT; 
-        if(buffer[1]&0x40)
-            data->event |= VBUS_REMOVE; 
+            data.event |= SHORT_PRESS; 
+        if(buffer[1]&0x02)
+        {
+            data.event |= NEGATIVE_EDGE; 
+            data.button_pressed = true;
+        }
+        if(buffer[1]&0x01)
+        {
+            data.event |= POSITIVE_EDGE; 
+            data.button_pressed = false;
+        }
         if(buffer[2]&0x10)
-            data->event |= CHARGING_DONE; 
+            data.event |= CHARGING_DONE; 
         if(buffer[2]&0x08)
-            data->event |= CHARGING_START;
+            data.event |= CHARGING_START;
     }
+    
     static int count=0;
     if(++count >= 2000)
     {
         count = 0;
-        data->battery_level = GetBatteryLevel();
+        data.battery_level = GetBatteryLevel();
     }
 }
 

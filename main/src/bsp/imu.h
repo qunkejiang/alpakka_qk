@@ -3,10 +3,29 @@
 
 #include <driver/ledc.h>
 #include "driver/spi_master.h"
-#include "ICM42688.h"
 
-#define DEG2RAD (3.14159265358979323846f / 180.0f)
 
+typedef struct  
+{
+	union 
+	{
+		float q[4];
+		struct 
+		{
+			float q0;
+			float q1;
+			float q2;
+			float q3;
+		};
+		struct 
+		{
+			float w;
+			float x;
+			float y;
+			float z;
+		};
+	};
+} quaternion_t;
 typedef union
 {
     struct
@@ -18,8 +37,16 @@ typedef union
     float axis[3];
 } Axis3f;
 
+typedef struct  
+{
+	quaternion_t quaternion;
+	float rMat[3];
+}pose_t;
+
+
 typedef struct
 {
+    pose_t pose;
     Axis3f acc;
     Axis3f gyro;
     float temp;
@@ -51,10 +78,11 @@ private:
     void icm42688_write_register(spi_device_handle_t *spi,uint8_t reg, uint8_t data);
     void icm42688_initialize(spi_device_handle_t *spi);
 public:
+    uint8_t calibration_step;
     Imu_Data_t data;
-    void calibration(float *G_off,int32_t *step);
-    Imu(imu_config_t *config);
+    void calibration(float *G_off);
     esp_err_t update(float *G_off);
+    Imu(imu_config_t *config);
 };
 
 #endif

@@ -11,7 +11,8 @@
 		"files.associations": {
 			"usb1": "cpp",
 			"*.ccc": "cpp",
-			"*.inc": "cpp"
+			"*.inc": "cpp",
+			"tusb_config.h": "c"
 		}
 	}
 }

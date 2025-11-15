@@ -1,8 +1,8 @@
 #include "Haptic_Motor.h"
 #include "pwm_audio.h"
-#include <esp_log.h>
+#include "logging.h"
 
-static const char *TAG = "Haptic_Motor";
+
 
 void Haptic_Motor::set_volume(int8_t volume)
 {
@@ -27,7 +27,7 @@ void Haptic_Motor::play_audio(const uint8_t *data, size_t wave_size, uint32_t ra
             //ESP_LOGD(TAG, "write [%"PRIu32"] [%ld]", block_w, cnt);
             index += cnt;
         } else {
-            ESP_LOGI(TAG, "play completed");
+            logging::debug("play completed\n");
             vTaskDelay(500 / portTICK_PERIOD_MS);
             break;
         }
@@ -37,6 +37,7 @@ void Haptic_Motor::play_audio(const uint8_t *data, size_t wave_size, uint32_t ra
 }
 Haptic_Motor::Haptic_Motor(haptic_config_t *config)
 {
+    logging::info("Initializing haptic motor\n");
     pwm_audio_config_t pwm_config = {
         .gpio_num_left = config->gpio_num_left,
         .gpio_num_right = config->gpio_num_right,

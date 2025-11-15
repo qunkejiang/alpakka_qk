@@ -1,11 +1,17 @@
 #ifndef CPU_C_H
 #define CPU_C_H
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "freertos/timers.h"
+
 class CPU {
 private:
-    static void PrintTaskAndMemoryInfo(void *pvParameters);
-    // static void CPU_task(void *pvParameters); // Uncomment if you want to use this function
+    TaskHandle_t taskMonitorHandle  = NULL;
 public:
+    static char* taskRuntimeBuffer;
+    static void printTaskAndMemoryInfo(void *pvParameters);
+    void toggleTaskMonitor(bool enable); 
     CPU();
 };
 

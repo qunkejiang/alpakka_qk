@@ -6,14 +6,8 @@
 #include <esp_lcd_panel_ops.h>
 
 #include <lvgl.h>
-#include <esp_timer.h>
-#include <esp_log.h>
-#include <esp_pm.h>
 
 class LcdDisplay  {
-public:
-    bool Lock(int timeout_ms = 0) ;// virtual override
-    void Unlock() ;// virtual override
 protected:
     esp_lcd_panel_io_handle_t panel_io_ = nullptr;
     esp_lcd_panel_handle_t panel_ = nullptr;
@@ -41,7 +35,6 @@ public:
     SpiLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                   int width, int height, int offset_x, int offset_y,
                   bool mirror_x, bool mirror_y, bool swap_xy
-//                   ,DisplayFonts fonts
     );
 };
 #endif // LCD_DISPLAY_H

@@ -1,11 +1,9 @@
 #ifndef BACKLIGHT_H
 #define BACKLIGHT_H
 
-#include <cstdint>
 #include <functional>
 
 #include <driver/gpio.h>
-#include <esp_timer.h>
 #include <driver/ledc.h>
 
 

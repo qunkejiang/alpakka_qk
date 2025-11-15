@@ -1,48 +1,58 @@
 #include "cpu.h"
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/timers.h"
-#include "esp_log.h"
+#include "Board.h"
+#include "logging.h"
 
-#define TAG  "CPU"
-
-void CPU::PrintTaskAndMemoryInfo(void *pvParameters)
+char* CPU::taskRuntimeBuffer = NULL;
+void CPU::printTaskAndMemoryInfo(void *pvParameters)
 {
-    char* InfoBuffer = (char *)heap_caps_malloc(1024, MALLOC_CAP_SPIRAM);
     size_t cap_free_size,cap_total_size,cap_malloc,cap_min_free_size;
     while (1)
-    {
-        vTaskList(InfoBuffer); 
-        printf("---------------------------------------------\r\n");
-        printf("task_name   task_status priority    stack task_id\r\n");
-        printf("%s", InfoBuffer);
-        printf("---------------------------------------------\r\n");
+    { 
+        vTaskList(taskRuntimeBuffer); 
+        logging::info("---------------------------------------------\r\n");
+        logging::info("task_name   task_status priority    stack task_id\r\n");
+        logging::info("%s", taskRuntimeBuffer);
+        logging::info("---------------------------------------------\r\n");
         
-        vTaskGetRunTimeStats(InfoBuffer);
-        printf("task_name       run_cnt         usage_rate\r\n");
-        printf("%s", InfoBuffer);
-        printf("---------------------------------------------\r\n\n");
+        vTaskGetRunTimeStats(taskRuntimeBuffer);
+        logging::info("task_name       run_cnt         usage_rate\r\n");
+        logging::info("%s", taskRuntimeBuffer);
+        logging::info("---------------------------------------------\r\n\n");
         cap_free_size = heap_caps_get_free_size(MALLOC_CAP_INTERNAL);
         cap_total_size = heap_caps_get_total_size(MALLOC_CAP_INTERNAL);
         cap_malloc   =  cap_total_size-cap_free_size;
         cap_min_free_size = heap_caps_get_minimum_free_size(MALLOC_CAP_INTERNAL);
-        ESP_LOGW(TAG, "INTERNAL RAM left %dB/%dB %dB,min:%dB",cap_free_size,cap_total_size,cap_malloc,cap_min_free_size);//
+        logging::info("INTERNAL RAM left %dB/%dB %dB,min:%dB\n",cap_free_size,cap_total_size,cap_malloc,cap_min_free_size);//
         cap_free_size = heap_caps_get_free_size(MALLOC_CAP_SPIRAM);
         cap_total_size = heap_caps_get_total_size(MALLOC_CAP_SPIRAM);
         cap_malloc   =  cap_total_size-cap_free_size;
         cap_min_free_size = heap_caps_get_minimum_free_size(MALLOC_CAP_SPIRAM);
-        ESP_LOGW(TAG, "SPI      RAM left %dB/%dB %dB,min:%dB",cap_free_size,cap_total_size,cap_malloc,cap_min_free_size);//
-        vTaskDelay(pdMS_TO_TICKS(10000));     
+        logging::info("SPI      RAM left %dB/%dB %dB,min:%dB\n",cap_free_size,cap_total_size,cap_malloc,cap_min_free_size);//
+        
+        vTaskDelay(pdMS_TO_TICKS(10000));  
+        //nvs_get_stats   
+    }
+}
+void CPU::toggleTaskMonitor(bool enable)
+{
+    if(enable)
+    {
+        if(taskMonitorHandle == NULL)
+            xTaskCreate(printTaskAndMemoryInfo, "task_monitor", 4096, NULL, 1, &taskMonitorHandle);
+    }else
+    {
+        vTaskDelete(taskMonitorHandle);
+        taskMonitorHandle = NULL;
     }
 }
 
-
-// void Init_CPU_task() {
-// }
 CPU::CPU()
 {
-    ESP_LOGI(TAG, "Init_CPU_task");
-    xTaskCreate(PrintTaskAndMemoryInfo, "tp", 2560, NULL, 5, NULL);
-    // Initialization code for Touch can be added here if needed
+    logging::info("Init_CPU_task\n");
+    taskRuntimeBuffer = (char *)heap_caps_malloc(1024, MALLOC_CAP_SPIRAM);
+    if(Board::get_nvm_data()->log_mask.cpu )
+    {
+        toggleTaskMonitor(1);
+    }
 }

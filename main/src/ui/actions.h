@@ -10,10 +10,9 @@ extern "C" {
 extern void action_load_options(lv_event_t * e);
 extern void action_save_options(lv_event_t * e);
 extern void action_backlight_action(lv_event_t * e);
-extern void action_joystick_calibration_setp1(lv_event_t * e);
-extern void action_joystick_calibration_setp3(lv_event_t * e);
 extern void action_touch_calibration1(lv_event_t * e);
 extern void action_touch_calibration2(lv_event_t * e);
+extern void action_load_profile_names(lv_event_t * e);
 
 
 #ifdef __cplusplus

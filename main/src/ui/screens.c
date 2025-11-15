@@ -1065,7 +1065,7 @@ void create_screen_menu1_page() {
             objects.menu1_roller = obj;
             lv_obj_set_pos(obj, 60, 69);
             lv_obj_set_size(obj, 78, 23);
-            lv_roller_set_options(obj, "通用键鼠\n用户键鼠\n通用手柄\nxbox手柄", LV_ROLLER_MODE_INFINITE);
+            lv_roller_set_options(obj, "Windows\nLinux\nGeneric", LV_ROLLER_MODE_INFINITE);
             lv_obj_add_flag(obj, LV_OBJ_FLAG_SCROLL_CHAIN_VER);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_SCROLL_CHAIN_HOR);
             lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -1096,6 +1096,13 @@ void create_screen_menu2_page() {
     {
         lv_obj_t *parent_obj = obj;
         {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            lv_obj_set_pos(obj, 22, 36);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "背光");
+        }
+        {
             // language
             lv_obj_t *obj = lv_roller_create(parent_obj);
             objects.language = obj;
@@ -1108,6 +1115,13 @@ void create_screen_menu2_page() {
             lv_obj_set_style_text_color(obj, lv_color_hex(0xff000000), LV_PART_SELECTED | LV_STATE_DEFAULT);
         }
         {
+            lv_obj_t *obj = lv_label_create(parent_obj);
+            lv_obj_set_pos(obj, 22, 70);
+            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+            lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_label_set_text(obj, "语言");
+        }
+        {
             // backlight
             lv_obj_t *obj = lv_slider_create(parent_obj);
             objects.backlight = obj;
@@ -1117,20 +1131,6 @@ void create_screen_menu2_page() {
             lv_slider_set_value(obj, 5, LV_ANIM_OFF);
             lv_obj_add_event_cb(obj, event_handler_cb_menu2_page_backlight, LV_EVENT_ALL, flowState);
             lv_obj_add_state(obj, LV_STATE_FOCUS_KEY);
-        }
-        {
-            lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 22, 36);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text(obj, "背光");
-        }
-        {
-            lv_obj_t *obj = lv_label_create(parent_obj);
-            lv_obj_set_pos(obj, 22, 70);
-            lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text(obj, "语言");
         }
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
@@ -1182,10 +1182,9 @@ void create_screen_menu3_page() {
             // menu3_roller
             lv_obj_t *obj = lv_roller_create(parent_obj);
             objects.menu3_roller = obj;
-            lv_obj_set_pos(obj, 40, 30);
-            lv_obj_set_size(obj, 80, 100);
-            lv_roller_set_options(obj, "配置1\n配置2\n配置3", LV_ROLLER_MODE_INFINITE);
-            lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_pos(obj, 20, 30);
+            lv_obj_set_size(obj, 120, 100);
+            lv_roller_set_options(obj, "1\n2\n3\n4\n5\n6", LV_ROLLER_MODE_INFINITE);
         }
     }
     
@@ -1413,11 +1412,11 @@ void create_screen_menu6_page() {
             // menu6_label
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.menu6_label = obj;
-            lv_obj_set_pos(obj, 17, 82);
+            lv_obj_set_pos(obj, 31, 85);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
             lv_obj_add_event_cb(obj, event_handler_cb_menu6_page_menu6_label, LV_EVENT_ALL, flowState);
             lv_obj_set_style_text_font(obj, &ui_font_ali, LV_PART_MAIN | LV_STATE_DEFAULT);
-            lv_label_set_text(obj, "旋转摇杆数圈后确认");
+            lv_label_set_text(obj, "摇杆回中后确认");
         }
     }
     

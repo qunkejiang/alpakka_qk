@@ -7,27 +7,25 @@
 #include "rotary.h"
 #include "thumbstick.h"
 #include "gyro.h"
-// #include "webusb.h"
-// #include "common.h"
 
 
-// typedef enum ProfileIndex_enum {
-//     PROFILE_HOME=0,
-//     PROFILE_FPS_FUSION,
-//     PROFILE_RACING,
-//     PROFILE_CONSOLE,
-//     PROFILE_DESKTOP,
-//     PROFILE_FPS_WASD,
-//     PROFILE_FLIGHT,
-//     PROFILE_CONSOLE_LEGACY,
-//     PROFILE_RTS,
-//     PROFILE_CUSTOM_1,
-//     PROFILE_CUSTOM_2,
-//     PROFILE_CUSTOM_3,
-//     PROFILE_CUSTOM_4,
-//     PROFILE_HOME_GAMEPAD,
-//     PROFILE_SLOTS
-// } ProfileIndex;
+typedef enum ProfileIndex_enum {
+    PROFILE_HOME=0,
+    PROFILE_FPS_FUSION,
+    PROFILE_RACING,
+    PROFILE_CONSOLE,
+    PROFILE_DESKTOP,
+    PROFILE_FPS_WASD,
+    PROFILE_FLIGHT,
+    PROFILE_CONSOLE_LEGACY,
+    PROFILE_RTS,
+    PROFILE_CUSTOM_1,
+    PROFILE_CUSTOM_2,
+    PROFILE_CUSTOM_3,
+    PROFILE_CUSTOM_4,
+    PROFILE_HOME_GAMEPAD,
+    PROFILE_SLOTS
+} ProfileIndex;
 
 typedef struct Profile_struct Profile_t;
 struct Profile_struct {
@@ -57,17 +55,21 @@ struct Profile_struct {
     Button_t r4;
     Thumbstick left_thumbstick;
     Thumbstick right_thumbstick;
-    Rotary *rotary;
+    Rotary rotary;
     Gyro gyro;
 };
 
 class  profile: public Button
 {
 private:
-    Profile_t profiles;//[PROFILE_SLOTS]只存当前使用的，全存的话浪费空间 
-    void load_from_config(CtrlProfile *profile);
+    Button_t home;
 public:
-    profile(CtrlProfile *config_profiles,uint8_t index);
+    Profile_t profiles;
+    //Profile_t profiles_home;
+
+    //void set_home(bool state);
+    void load_from_config(CtrlProfile *ctrl_profile);
     void report();
     void reset();
+    profile(CtrlProfile *ctrl_profile);
 };

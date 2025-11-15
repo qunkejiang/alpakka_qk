@@ -1,42 +1,9 @@
 #include "joystick.h"
-#include <cmath>
+#include "logging.h"
+#include "board.h"
+#include "common.h"
 
-#define TAG "joystick"
       
-#define DEADZONE_RADIUS_UP 0.3   // 圆形死区半径
-#define DEADZONE_RADIUS_DOWN 0.2   // 圆形死区半径
-//
-joystick_dir_t joystick::GetJoystickDir(float x, float y)
-{
-    joystick_dir_t dir = JOYSTICK_DIR_NONE;
-    
-    // 圆形死区处理 (向量模长小于阈值判定为中立)
-    float distance = std::sqrtf(x*x + y*y);
-    if (distance < DEADZONE_RADIUS_DOWN) {
-        dir = JOYSTICK_DIR_CENTER;
-    }else  if (distance > DEADZONE_RADIUS_UP) 
-    {
-        float angle = std::atan2f(x,y ) * 180.0 / M_PI;
-        if (angle > -20 && angle <= 20) {
-            dir = JOYSTICK_DIR_UP;
-        }else if (angle > 25 && angle <= 65) {
-            dir = JOYSTICK_DIR_UP_RIGHT;
-        }else if (angle > 70 && angle <= 110) {
-            dir = JOYSTICK_DIR_RIGHT;
-        }else if (angle > 115 && angle <= 155) {
-            dir = JOYSTICK_DIR_DOWN_RIGHT;
-        }else if (angle > 160 || angle <= -160) {
-            dir = JOYSTICK_DIR_DOWN;
-        }else if (angle > -155 && angle <= -115) {
-            dir = JOYSTICK_DIR_DOWN_LEFT;
-        }else if (angle > -110 && angle <= -70) {
-            dir = JOYSTICK_DIR_LEFT;
-        }else if (angle > -65 && angle <= -25) {
-            dir = JOYSTICK_DIR_UP_LEFT;
-        }
-    }
-    return dir;
-}
 
 void joystick::InitContinuousADC(adc_channel_t *channel, uint8_t channel_num, adc_continuous_handle_t *out_handle)
 {
@@ -64,22 +31,24 @@ void joystick::InitContinuousADC(adc_channel_t *channel, uint8_t channel_num, ad
     }
 
     adc_continuous_config_t dig_cfg = {
+        .pattern_num = channel_num,
+        .adc_pattern = adc_pattern,
         .sample_freq_hz = 4000,
         .conv_mode = ADC_CONV_SINGLE_UNIT_1,
         .format = ADC_DIGI_OUTPUT_FORMAT_TYPE2,
     };
-    dig_cfg.pattern_num = channel_num;
-    dig_cfg.adc_pattern = adc_pattern;
     ESP_ERROR_CHECK(adc_continuous_config(handle_d, &dig_cfg));
 
     *out_handle = handle_d;
 }
 
-esp_err_t joystick::GetADCValues(float *adc_value,int16_t *offset,int16_t *gain) 
+esp_err_t joystick::update(int16_t *offset) 
 {
     esp_err_t ret;
     uint8_t result[JOYSTICK_READ_LEN];
     uint32_t ret_num;
+    float adc_value[4];
+    uint8_t thumbstick_smooth_samples = Board::GetInstance().nvm_->nvm_data.thumbstick_smooth_samples;
     ret = adc_continuous_read(handle, result, JOYSTICK_READ_LEN, &ret_num, 0);
     if (ret == ESP_OK)
     {
@@ -87,46 +56,66 @@ esp_err_t joystick::GetADCValues(float *adc_value,int16_t *offset,int16_t *gain)
         
         for (int i = 0; i < 4; ++i) {
             // 从 ADC 数据中提取值并存储到 adc_value 数组
-            adc_raw[i] = p->type2.data;
-            adc_value[i] = (adc_raw[i]-offset[i])/static_cast<float>(gain[i]);
-            if(adc_value[i]>1.0)adc_value[i]=1.0;
-            if(adc_value[i]<-1.0)adc_value[i]=-1.0;
-            ++p;
+            adc_raw[i] = p[i].type2.data;
+            adc_value[i] = (adc_raw[i]-offset[i])*(THUMBSTICK_BASELINE_SATURATION/2048.f);
+            if(thumbstick_smooth_samples>0)
+                smoothed[i] = smooth(smoothed[i],adc_value[i], (float)(thumbstick_smooth_samples));
+            else
+                smoothed[i]=adc_value[i];
         }
+        position[0].x=smoothed[0];
+        position[0].y=smoothed[1];
+        position[1].x=-smoothed[2];
+        position[1].y=smoothed[3];
+        for (int i = 0; i < 2; ++i) {
+            position[i].angle=degrees(atan2f(position[i].x,position[i].y));
+            position[i].radius=sqrtf(position[i].x*position[i].x+position[i].y*position[i].y);
+        }
+        calibration(offset);
     }else{
-        ESP_LOGI(TAG, "GetADCValues failed");
+        logging::info("GetADCValues failed\n");
     }
     return ret; // No data read
 }
-void joystick::calibration_setp1()
+void joystick::calibration(int16_t *off)
 {
-    for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
+    static int32_t count = 0;
+    static int32_t temporary[JOYSTICK_CHANNEL_NUM];
+    switch (calibration_step)
     {
-        calibration_l[i]=calibration_h[i]=2000;
+    case 1:
+        calibration_step = 2;
+        count = 0;
+        for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
+        {
+            temporary[i] = 0.0f;
+        }
+        break;
+    case 2:
+        count++;
+        if(count>=5000)
+        {
+            for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
+            {
+                off[i] = temporary[i]/5000.0f;
+                logging::info("joystick offset %d : %f\n", i, off[i]);
+            }
+            //Board::GetInstance().nvm_->save_nvm_data();
+            calibration_step = 3;
+        }else
+        {
+            for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
+            {
+                temporary[i] += adc_raw[i];
+            }
+        }
+        break;
+    default:
+        break;
     }
-}
-void joystick::calibration_setp2()
-{
-    for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
-    {
-        if(adc_raw[i]<calibration_l[i])calibration_l[i]=adc_raw[i];
-        if(adc_raw[i]>calibration_h[i])calibration_h[i]=adc_raw[i];
-    }
-}
-
-void joystick::calibration_setp3(int16_t *offset,int16_t *gain)
-{
-    for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
-    {
-        offset[i]=(calibration_l[i]+calibration_h[i])/2;
-        gain[i]=(calibration_h[i]-calibration_l[i])/2;
-        ESP_LOGI(TAG, "calibration offset[%d] is :%d",i,offset[i]);
-        ESP_LOGI(TAG, "calibration gain[%d] is :%d",i,gain[i]);
-    }
-    gain[2]=-gain[2];
 }
 joystick::joystick(adc_channel_t *channel, uint8_t channel_num) {
-    ESP_LOGI(TAG, "Initializing controller input system");
+    logging::info("Initializing joystick\n");
     InitContinuousADC(channel, channel_num, &handle);
     ESP_ERROR_CHECK(adc_continuous_start(handle));
 }

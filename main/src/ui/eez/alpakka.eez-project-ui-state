@@ -1,9 +1,9 @@
 {
   "navigation": {
-    "selectedUserPageObject": "[alpakka.eez-project]:/userPages/0",
+    "selectedUserPageObject": "[alpakka.eez-project]:/userPages/6",
     "selectedUserWidgetObject": "[alpakka.eez-project]:/userWidgets/0",
-    "selectedActionObject": "[alpakka.eez-project]:/actions/7",
-    "selectedGlobalVariableObject": "[alpakka.eez-project]:/variables/globalVariables/1",
+    "selectedActionObject": "[alpakka.eez-project]:/actions/4",
+    "selectedGlobalVariableObject": "[alpakka.eez-project]:/variables/globalVariables/-1",
     "selectedStyleObject": "[alpakka.eez-project]:/lvglStyles/styles/0",
     "selectedThemeObject": "[alpakka.eez-project]:/themes/0",
     "selectedFontObject": "[alpakka.eez-project]:/fonts/0",
@@ -199,10 +199,87 @@
               "type": "tabset",
               "id": "EDITORS",
               "weight": 50.934029225224776,
-              "selected": 1,
+              "selected": 3,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
+                {
+                  "type": "tab",
+                  "id": "#e81a31b7-25e7-4443-ab0c-7faf639658fc",
+                  "name": "joystick_calibration_setp3",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/actions/4",
+                    "permanent": false
+                  },
+                  "icon": "material:code"
+                },
+                {
+                  "type": "tab",
+                  "id": "#4fdacb51-ec5f-49ec-917c-af8e2e11df18",
+                  "name": "menu5_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/8",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#e2cdff72-84ff-41c1-9131-f632e2b5e973",
+                  "name": "menu4_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/7",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#1f9e63e2-b8d4-41cf-a3f0-f3e2826832da",
+                  "name": "menu3_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/6",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#7c5c1a64-3ece-40dc-9dd0-5e14fe953fb8",
+                  "name": "menu2_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/5",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#22504509-6c00-4c3c-9a08-8b981cbc7df0",
+                  "name": "menu1_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/4",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
+                {
+                  "type": "tab",
+                  "id": "#79bbaff6-0ed5-47bd-bb87-a98c6134cf39",
+                  "name": "menu_page",
+                  "component": "editor",
+                  "config": {
+                    "objectPath": "[alpakka.eez-project]:/userPages/3",
+                    "permanent": true
+                  },
+                  "icon": "svg:page"
+                },
                 {
                   "type": "tab",
                   "id": "#7a761305-c950-4446-85a7-14337f1a378d",
@@ -224,17 +301,6 @@
                     "permanent": true
                   },
                   "icon": "svg:page"
-                },
-                {
-                  "type": "tab",
-                  "id": "#25cf5b0d-91de-4f58-8b6f-e262832d174e",
-                  "name": "touch_calibration1_1",
-                  "component": "editor",
-                  "config": {
-                    "objectPath": "[alpakka.eez-project]:/actions/7",
-                    "permanent": false
-                  },
-                  "icon": "material:code"
                 },
                 {
                   "type": "tab",
@@ -303,7 +369,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -323,8 +390,7 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1136,7 +1202,7 @@
       },
       "transform": {
         "translate": {
-          "x": -173.8290086816642,
+          "x": -160.82900868166416,
           "y": -131.49479822368164
         },
         "scale": 0.9
@@ -1161,9 +1227,7 @@
       "selection": {
         "0": {
           "0": {},
-          "6": {
-            "$selected": true
-          }
+          "6": {}
         },
         "1": {}
       },
@@ -1252,13 +1316,15 @@
       "selection": {
         "0": {
           "0": {},
-          "1": {}
+          "1": {
+            "$selected": true
+          }
         }
       },
       "transform": {
         "translate": {
           "x": -186.99245144685125,
-          "y": -141.95267237921587
+          "y": -178.6193389823042
         },
         "scale": 0.9
       },
@@ -1306,15 +1372,13 @@
     "[alpakka.eez-project]:/userPages/6[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          }
+          "0": {}
         }
       },
       "transform": {
         "translate": {
-          "x": 20.00000076293925,
-          "y": -95.83333435058593
+          "x": -121.99999923706076,
+          "y": -64.16667194366477
         },
         "scale": 0.9
       },
@@ -1385,13 +1449,11 @@
           "7": {}
         },
         "1": {},
-        "7": {
-          "$selected": true
-        }
+        "6": {}
       },
       "transform": {
         "translate": {
-          "x": -7.634139951303813,
+          "x": -325.3008023582252,
           "y": -215.51042261315206
         },
         "scale": 0.9
@@ -1476,9 +1538,7 @@
     "[alpakka.eez-project]:/userPages/10[flow-state]": {
       "selection": {
         "0": {
-          "0": {
-            "$selected": true
-          },
+          "0": {},
           "2": {},
           "3": {},
           "5": {}

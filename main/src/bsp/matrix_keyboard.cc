@@ -3,35 +3,14 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
-#include "freertos/timers.h"
 #include "esp_log.h"
 #include "esp_check.h"
 #include "driver/gpio.h"
 #include "esp_private/gpio.h"
 #include "matrix_keyboard.h"
-#include <cstring>
 
-static const char *TAG = "mkbd";
 
-void matrix_kbd::get_matrix_kbd(key_matrix_t *data)
-{
-    for(int i=0;i<mkbd->nr_col_gpios;i++)
-    {
-        if(key_value[i]!=key_value_old[i])
-        {
-            data->key_edge[i]=key_value[i]^key_value_old[i];
-        }
-        else
-        {
-            data->key_edge[i]=0;
-        }
-        data->key_value[i]=key_value_old[i]=key_value[i];
-        if(data->key_edge[i])
-            ESP_LOGI(TAG, "key_value[%d]:%d %d",i,data->key_value[i],data->key_edge[i]);
-    }
-}
+
 bool matrix_kbd::ScanKeyboardColumns(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data) 
 {    
     static uint8_t i=0;
@@ -55,11 +34,11 @@ void matrix_kbd::InitializeKeyboardTimer(uint16_t count) {
     gptimer_handle_t gptimer_handle = NULL; // 定时器句柄
 
     // 配置定时器
-    gptimer_config_t gptimer_config = {
-        .clk_src = GPTIMER_CLK_SRC_DEFAULT, // 配置时钟源
-        .direction = GPTIMER_COUNT_UP,      // 选择模式为向上计数
-        .resolution_hz = 1000000,      // 分辨率
-    };
+    gptimer_config_t gptimer_config = {};
+    gptimer_config.clk_src = GPTIMER_CLK_SRC_DEFAULT; // 配置时钟源
+    gptimer_config.direction = GPTIMER_COUNT_UP;      // 选择模式为向上计数
+    gptimer_config.resolution_hz = 1000000;      // 分辨率
+
     ESP_ERROR_CHECK(gptimer_new_timer(&gptimer_config, &gptimer_handle));
 
     // 配置警报
@@ -92,11 +71,6 @@ void matrix_kbd::InitializeKeyboardTimer(uint16_t count) {
 
 matrix_kbd::matrix_kbd(matrix_kbd_config_t *config)//
 {
-    key_value = (uint8_t *)malloc(config->nr_col_gpios * sizeof(uint8_t));
-    key_value_old = (uint8_t *)malloc(config->nr_col_gpios * sizeof(uint8_t));
-    memset(key_value, 0, config->nr_col_gpios * sizeof(uint8_t));
-    memset(key_value_old, 0, config->nr_col_gpios * sizeof(uint8_t));
-
 
     mkbd = (matrix_kbd_t *)calloc(1, sizeof(matrix_kbd_t) + (config->nr_row_gpios) * sizeof(uint32_t));
 
@@ -139,7 +113,5 @@ matrix_kbd::matrix_kbd(matrix_kbd_config_t *config)//
 
     InitializeKeyboardTimer(config->nr_col_gpios);
 
-    return;
-    
 }
 

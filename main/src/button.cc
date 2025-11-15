@@ -5,12 +5,28 @@
 #include <cstring>
 
 #include "button.h"
-#include "config.h"
 #include "board.h"
 
+
 bool Button::is_pressed(Button_t *self) {
-    return Board::GetInstance().keyboard_->key_value[self->pin>>4]&(1<<(self->pin&0xf)) ;  // Prevent undefined behavior.
+    // Virtual buttons.
+    if (self->pin == BUTTON_NONE) return false;
+    else if (self->pin == BUTTON_VIRTUAL) {
+        if (self->virtual_press) {
+            self->virtual_press = false;
+            return true;
+        } else {
+            return false;
+        }
+    }else if (self->pin == BUTTON_HOME) {
+        return Board::get_axp2101().button_pressed;
+    }
+    // else if (self->pin == BUTTON_TOUCH_IN) {
+    //     return Touch::is_pressed();
+    // }
+    return Board::get_key_value(self->pin);
 }
+
 
 void Button::report(Button_t *self) {
     if (self->mode == NORMAL) handle_normal(self);
@@ -25,13 +41,13 @@ void Button::handle_normal(Button_t *self) {
     if (esp_timer_get_time() < debounce) return;
     bool pressed = is_pressed(self);
     if(pressed && !self->state_primary) {
-    //     hid_press_multiple(self->actions);
+        hid::press_multiple(self->actions);
         self->state_primary = true;
         self->press_timestamp = esp_timer_get_time();
         return;
     }
     if((!pressed) && self->state_primary) {
-    //     hid_release_multiple(self->actions);
+        hid::release_multiple(self->actions);
         self->state_primary = false;
         return;
     }
@@ -39,11 +55,11 @@ void Button::handle_normal(Button_t *self) {
 
 void Button::handle_hold(Button_t *self) {
     bool immediate = self->mode & IMMEDIATE;
-    uint32_t time = (self->mode & LONG) ? CFG_HOLD_LONG_TIME : CFG_HOLD_TIME;
+    uint64_t time = (self->mode & LONG) ? CFG_HOLD_LONG_TIME : CFG_HOLD_TIME;
     bool pressed = is_pressed(self);
     if(pressed && !self->state_primary && !self->state_secondary) {
         // Initial press.
-//         if (immediate) hid_press_multiple(self->actions);
+        if (immediate) hid::press_multiple(self->actions);
         self->state_primary = true;
         self->press_timestamp = esp_timer_get_time();
         return;
@@ -51,7 +67,7 @@ void Button::handle_hold(Button_t *self) {
     if(pressed && self->state_primary && !self->state_secondary) {
         if (esp_timer_get_time() > self->press_timestamp + (time * 1000)) {
             // Pressed and being held long enough.
-//             hid_press_multiple(self->actions_secondary);
+            hid::press_multiple(self->actions_secondary);
             if (!immediate) self->state_primary = false;
             self->state_secondary = true;
         }
@@ -59,18 +75,18 @@ void Button::handle_hold(Button_t *self) {
     if(!pressed && self->state_primary) {
         if (immediate) {
             // Released, immediate actions were triggered.
-//            hid_release_multiple(self->actions);
+           hid::release_multiple(self->actions);
         } else {
             // Released, it was never condidered held.
-//            hid_press_multiple(self->actions);
-//            hid_release_multiple_later(self->actions, 100);
+           hid::press_multiple(self->actions);
+           hid::release_multiple_later(self->actions, 100);
         }
         self->state_primary = false;
         return;
     }
     if(!pressed && self->state_secondary) {
         // Relased and it was condidered held.
-//        hid_release_multiple(self->actions_secondary);
+        hid::release_multiple(self->actions_secondary);
         self->state_secondary = false;
     }
 }
@@ -93,20 +109,20 @@ void Button::handle_double(Button_t *self) {
         if (is_double_press) {
             // The press is considered a double press.
             self->state_terciary = true;
-//            hid_press_multiple(self->actions_terciary);
+            hid::press_multiple(self->actions_terciary);
         } else {
             // It is a first press.
             self->state_primary = true;
             if (!self->emitted_primary) {
                 if (immediate) {
                     // Trigger primary immediately.
-//                    hid_press_multiple(self->actions);
+                    hid::press_multiple(self->actions);
                     self->emitted_primary = true;
                 } else {
                     uint64_t timeout = esp_timer_get_time() > self->press_timestamp + (time * 1000);
                     if (timeout) {
                         // It has been held so long that the next press cannot be a double press.
-//                        hid_press_multiple(self->actions);
+                        hid::press_multiple(self->actions);
                         self->emitted_primary = true;
                     }
                 }
@@ -117,22 +133,22 @@ void Button::handle_double(Button_t *self) {
     if(!pressed && self->state_primary && !self->state_terciary) {
         if (self->emitted_primary) {
             // Released and primary actions were triggered.
-//            hid_release_multiple(self->actions);
+            hid::release_multiple(self->actions);
             self->state_primary = false;
             self->emitted_primary = false;
         } else {
             uint64_t timeout = esp_timer_get_time() > self->press_timestamp + (time * 1000);
             if (timeout) {
                 // Released for so long that the next press cannot be a double press.
-//                hid_press_multiple(self->actions);
-//                hid_release_multiple_later(self->actions, 100);
+                hid::press_multiple(self->actions);
+                hid::release_multiple_later(self->actions, 100);
                 self->state_primary = false;
             }
         }
     }
     if(!pressed && self->state_terciary) {
         // Released and it was a double press,
-//        hid_release_multiple(self->actions_terciary);
+        hid::release_multiple(self->actions_terciary);
         self->state_primary = false;
         self->state_terciary = false;
     }
@@ -157,19 +173,19 @@ void Button::handle_hold_double(Button_t *self) {
         if (is_double_press) {
             // The press is considered a double press.
             self->state_terciary = true;
-//            hid_press_multiple(self->actions_terciary);
+            hid::press_multiple(self->actions_terciary);
         } else {
             self->state_primary = true;
             if (!self->state_secondary) {
                 if (immediate && !self->emitted_primary) {
                     // Trigger primary immediately.
-//                    hid_press_multiple(self->actions);
+                    hid::press_multiple(self->actions);
                     self->emitted_primary = true;
                 }
                 uint64_t timeout = esp_timer_get_time() > self->press_timestamp + (hold_time * 1000);
                 if (timeout) {
                     // It has been held so long that is considered held.
-//                    hid_press_multiple(self->actions_secondary);
+                    hid::press_multiple(self->actions_secondary);
                     self->state_secondary = true;
                 }
             }
@@ -178,27 +194,27 @@ void Button::handle_hold_double(Button_t *self) {
     }
     if (!pressed && self->emitted_primary) {
         // Released and primary actions (immediate) was triggered.
-//        hid_release_multiple(self->actions);
+        hid::release_multiple(self->actions);
         self->emitted_primary = false;
     }
     if(!pressed && self->state_primary && !self->state_secondary && !self->state_terciary && !immediate) {
         uint64_t timeout = esp_timer_get_time() > self->press_timestamp + (double_time * 1000);
         if (timeout) {
             // Released for so long that the next press cannot be a double press.
-//            hid_press_multiple(self->actions);
-//            hid_release_multiple_later(self->actions, 100);
+            hid::press_multiple(self->actions);
+            hid::release_multiple_later(self->actions, 100);
             self->state_primary = false;
         }
     }
     if(!pressed && self->state_secondary) {
         // Released and it was considered held.
-//        hid_release_multiple(self->actions_secondary);
+        hid::release_multiple(self->actions_secondary);
         self->state_primary = false;
         self->state_secondary = false;
     }
     if(!pressed && self->state_terciary) {
         // Released and it was a double press.
-//        hid_release_multiple(self->actions_terciary);
+        hid::release_multiple(self->actions_terciary);
         self->state_primary = false;
         self->state_terciary = false;
     }
@@ -208,13 +224,13 @@ void Button::handle_sticky(Button_t *self) {
     bool pressed = is_pressed(self);
     if(pressed && !self->state_primary) {
         self->state_primary = true;
-//         hid_press_multiple(self->actions);
-//         hid_press_multiple(self->actions_secondary);
+        hid::press_multiple(self->actions);
+        hid::press_multiple(self->actions_secondary);
         return;
     }
     if((!pressed) && self->state_primary) {
         self->state_primary = false;
-//         hid_release_multiple(self->actions_secondary);
+        hid::release_multiple(self->actions_secondary);
         return;
     }
 }
@@ -235,16 +251,17 @@ Button_t Button::Button_from_params (
     Actions actions_terciary
 ) {
     Button_t button;
-    button.pin = pin;
-    button.mode = mode;
     memcpy(button.actions, actions, 4);
     memcpy(button.actions_secondary, actions_secondary, 4);
     memcpy(button.actions_terciary, actions_terciary, 4);
+
+    button.pin = pin;
+    button.mode = mode;
     button.state_primary = false;
     button.state_secondary = false;
     button.state_terciary = false;
     button.emitted_primary = false;
-    //button.virtual_press = false;
+    button.virtual_press = false;
     button.press_timestamp = 0;
     button.press_timestamp_prev = 0;
     button.timestamps_updated = false;

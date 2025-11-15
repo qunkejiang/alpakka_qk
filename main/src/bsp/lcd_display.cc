@@ -2,37 +2,31 @@
 
 #include <vector>
 #include <esp_lvgl_port.h>
+#include "logging.h"
 
-#include "board.h"
 #include "ui.h"
 
-#define TAG "LcdDisplay"
 
 SpiLcdDisplay::SpiLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_handle_t panel,
                            int width, int height, int offset_x, int offset_y, bool mirror_x, bool mirror_y, bool swap_xy
-                           //,
-                           //DisplayFonts fonts
                            )
     : LcdDisplay(panel_io, panel) //, fonts
 {
     width_ = width;
     height_ = height;
 
+    logging::info("LcdDisplay initialized\n");
     // Set the display to on
-    ESP_LOGI(TAG, "Turning display on");
     ESP_ERROR_CHECK(esp_lcd_panel_disp_on_off(panel_, true));
 
-    ESP_LOGI(TAG, "Initialize LVGL library");
     lv_init();
 
-    ESP_LOGI(TAG, "Initialize LVGL port");
     lvgl_port_cfg_t port_cfg = ESP_LVGL_PORT_INIT_CONFIG();
     port_cfg.task_priority = 1;
     port_cfg.timer_period_ms = 50;
     // port_cfg.task_stack = 40*1024;
     lvgl_port_init(&port_cfg);
     
-    ESP_LOGI(TAG, "Adding LCD screen");
     const lvgl_port_display_cfg_t display_cfg = {
         .io_handle = panel_io_,
         .panel_handle = panel_,
@@ -61,7 +55,7 @@ SpiLcdDisplay::SpiLcdDisplay(esp_lcd_panel_io_handle_t panel_io, esp_lcd_panel_h
 
     display_ = lvgl_port_add_disp(&display_cfg);
     if (display_ == nullptr) {
-        ESP_LOGE(TAG, "Failed to add display");
+        logging::error("Failed to add display\n");
         return;
     }
 
@@ -82,20 +76,12 @@ void LcdDisplay::Lcd_ui_tick(void *pvParameters)
     }
 }
 void LcdDisplay::SetupUI() {
-    if (!Lock(30000)) {
-        ESP_LOGE("Display", "Failed to lock display");
+    if (!lvgl_port_lock(30000)) {
+        logging::error("Display", "Failed to lock display\n");
     }
     ui_init();
-    Unlock();
-    xTaskCreatePinnedToCore(Lcd_ui_tick, "Lcd_ui_tick", 4096, NULL, 4, NULL, 0);
-}
-
-bool LcdDisplay::Lock(int timeout_ms) {
-    return lvgl_port_lock(timeout_ms);
-}
-
-void LcdDisplay::Unlock() {
     lvgl_port_unlock();
+    xTaskCreatePinnedToCore(Lcd_ui_tick, "Lcd_ui_tick", 4096, NULL, 4, NULL, 0);
 }
 
 void lv_mem_init(void)

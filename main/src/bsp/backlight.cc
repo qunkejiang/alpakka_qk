@@ -1,11 +1,10 @@
 #include "backlight.h"
-// #include "settings.h"
 
-#include <esp_log.h>
-#include <driver/ledc.h>
 
-#define TAG "Backlight"
+#include "logging.h"
+#include <esp_timer.h>
 
+ 
 
 
 PwmBacklight::PwmBacklight(gpio_num_t pin, bool output_invert,ledc_timer_t  timer_num,ledc_channel_t channel) 

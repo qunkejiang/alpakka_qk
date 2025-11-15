@@ -19,7 +19,7 @@ static uint16_t xinput_open(
     tusb_desc_interface_t const *itf_desc,
     uint16_t max_len
 ) {
-    debug_uart(
+    logging::debug_uart(
         "USB: xinput_open rhport=%i itf=0x%x max_len=%i\n",
         rhport,
         itf_desc->iInterface,
@@ -42,7 +42,7 @@ static bool xinput_control_xfer_cb(
     uint8_t stage,
     tusb_control_request_t const *request
 ) {
-    // printf("xinput_control_xfer_cb\n");
+    logging::debug_uart("xinput_control_xfer_cb\n");
     return true;
 }
 
@@ -52,7 +52,6 @@ static bool xinput_xfer_cb(
     xfer_result_t result,
     uint32_t xferred_bytes
 ) {
-    // printf("xinput_xfer_cb\n");
     return true;
 }
 

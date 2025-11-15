@@ -1,9 +1,9 @@
 #ifndef _BOARD_CONFIG_H_
 #define _BOARD_CONFIG_H_
 
-#include <cstdint>
-#define ACTIONS_LEN 4
-typedef uint8_t Actions[ACTIONS_LEN];
+
+#define VERSION "1.1.0"
+
 
 //Display
 #define DISPLAY_WIDTH 160
@@ -78,7 +78,5 @@ typedef uint8_t Actions[ACTIONS_LEN];
 #define CFG_HOLD_TIME 200  // Milliseconds.
 #define CFG_HOLD_LONG_TIME 2000  // Milliseconds.
 #define CFG_DOUBLE_PRESS_TIME 300  // Milliseconds.
-
-
 
 #endif // _BOARD_CONFIG_H_

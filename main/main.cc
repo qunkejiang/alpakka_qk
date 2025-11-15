@@ -10,6 +10,6 @@
 
 extern "C"  void app_main(void)
 {
-    // Initialize the default event loop
-    Application::GetInstance().Start();
+    Application* app = new Application();
+    app->Start();
 }

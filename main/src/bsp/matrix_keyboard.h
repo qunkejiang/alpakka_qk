@@ -3,10 +3,11 @@
 #define MATRIX_KEYBOARD_H
 #include <stdint.h>
 #include <stdlib.h>
-#include "esp_err.h"
+
 
 #include "driver/dedic_gpio.h"
 #include "driver/gptimer.h"
+#include "board_config.h"
 typedef struct {
     uint8_t *key_edge;
     uint8_t *key_value;
@@ -32,13 +33,11 @@ class matrix_kbd{
 private:
     void InitializeKeyboardTimer(uint16_t count);
     static bool ScanKeyboardColumns(gptimer_handle_t timer, const gptimer_alarm_event_data_t *edata, void *user_data);
+    matrix_kbd_t *mkbd = NULL;
 
 public:
-    matrix_kbd_t *mkbd = NULL;
-    uint8_t *key_value = NULL;
-    uint8_t *key_value_old = NULL;
+    uint8_t key_value[MATRIX_KEYBOARD_COLS_NUM]={0,0,0,0};
     matrix_kbd(matrix_kbd_config_t *config);
-    void get_matrix_kbd(key_matrix_t *data);
 };
 
 #endif 

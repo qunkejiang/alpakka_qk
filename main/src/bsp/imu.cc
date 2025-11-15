@@ -1,8 +1,78 @@
 #include "imu.h"
-#include <esp_log.h>
-#include <cstring>
+#include "ICM42688.h"
+#include "common.h"
+#include <string.h>
+#include "logging.h"
+
 
 #define IMU_SYNC_FREQ_HZ 32000
+
+
+void imuUpdate(Axis3f acc, Axis3f gyro,pose_t *data, float dt)	//数据融合 互补滤波
+{
+	static float exInt = 0.0f;
+	static float eyInt = 0.0f;
+	static float ezInt = 0.0f;		
+	
+	float Kp;		
+	float Ki;		
+	
+	float *q=(float *)&data->quaternion.q;
+    float *rMat=data->rMat;
+	
+	float normalise;
+	float ex, ey, ez;
+	float halfT = 0.5f * dt;
+	
+	gyro.x = radians(gyro.x);	// 度转弧度 
+	gyro.y = radians(gyro.y);
+	gyro.z = radians(gyro.z);
+	
+	normalise = invSqrt(acc.x * acc.x + acc.y * acc.y + acc.z * acc.z);
+	if(normalise != 0.0f) 
+	{
+		acc.x *= normalise;
+		acc.y *= normalise;
+		acc.z *= normalise;
+
+		ex = (acc.y * rMat[2] - acc.z * rMat[1]);//float x_ca = y_aa * z_ac - z_aa * y_ac;
+		ey = (acc.z * rMat[0] - acc.x * rMat[2]);//float y_ca = z_aa * x_ac - x_aa * z_ac;
+		ez = (acc.x * rMat[1] - acc.y * rMat[0]);//float z_ca = x_aa * y_ac - y_aa * x_ac;
+		
+		float accConfidence=(1.0f-abs(1.0f/normalise-1.0f));
+		if(accConfidence>1.0f)
+			accConfidence=1.0f;
+		else if(accConfidence<0.0f)
+			accConfidence=0.0f;
+		Kp=0.4f*accConfidence;
+		Ki=0.01f* dt*accConfidence;
+
+		exInt += Ki * ex ;  
+		eyInt += Ki * ey ;
+		ezInt += Ki * ez ;
+		
+		gyro.x += Kp * ex + exInt;
+		gyro.y += Kp * ey + eyInt;
+		gyro.z += Kp * ez + ezInt; 
+	} 
+    
+	float qLast[4]={q[0],q[1],q[2],q[3]};
+	q[0] += (-qLast[1] * gyro.x - qLast[2] * gyro.y - qLast[3] * gyro.z) * halfT;
+	q[1] += ( qLast[0] * gyro.x + qLast[2] * gyro.z - qLast[3] * gyro.y) * halfT;
+	q[2] += ( qLast[0] * gyro.y - qLast[1] * gyro.z + qLast[3] * gyro.x) * halfT;
+	q[3] += ( qLast[0] * gyro.z + qLast[1] * gyro.y - qLast[2] * gyro.x) * halfT;
+	
+	normalise = invSqrt(q[0] * q[0] + q[1] * q[1] + q[2] * q[2] + q[3] * q[3]);
+	q[0] *= normalise;
+	q[1] *= normalise;
+	q[2] *= normalise;
+	q[3] *= normalise;
+    
+    rMat[0] = 2.0f * (q[1] * q[3] - q[0] * q[2]);
+    rMat[1] = 2.0f * (q[2] * q[3] + q[0] * q[1]);
+    rMat[2] = 1.0f - (q[1] * q[1] - q[2] * q[2])*2.0f;
+	
+}
 
 inline int32_t combine_20bit_signed(uint8_t msb, uint8_t lsb, uint8_t ext) {
     return ((msb << 24) | (lsb << 16) | (ext << 12)) >> 12;
@@ -10,7 +80,8 @@ inline int32_t combine_20bit_signed(uint8_t msb, uint8_t lsb, uint8_t ext) {
 
 esp_err_t Imu::icm42688_read_register(spi_device_handle_t *spi,uint8_t reg, uint8_t *data, uint8_t len)
 {
-    spi_transaction_t t={0};
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));
     t.addr = reg|0x80;
     t.rxlength = 8 * len; // Receive length is the number of bytes to read
     t.rx_buffer = data;
@@ -18,7 +89,8 @@ esp_err_t Imu::icm42688_read_register(spi_device_handle_t *spi,uint8_t reg, uint
 }
 void Imu::icm42688_write_register(spi_device_handle_t *spi,uint8_t reg, uint8_t data)
 {
-    spi_transaction_t t={0};
+    spi_transaction_t t;
+    memset(&t, 0, sizeof(t));
     t.addr = reg;
     t.length = 8; // Length is in bits
     t.tx_buffer = &data;
@@ -54,14 +126,14 @@ void Imu::icm42688_initialize(spi_device_handle_t *spi)
     icm42688_write_register(spi,INT_SOURCE0, UI_DRDY_INT1_EN);
 
 }
-void Imu::calibration(float *G_off,int32_t *step)
+void Imu::calibration(float *G_off)
 {
     static int32_t count = 0;
     static float temporary[3] = {0.0f,0.0f,0.0f};
-    switch (*step)
+    switch (calibration_step)
     {
     case 1:
-        *step = 2;
+        calibration_step = 2;
         count = 0;
         temporary[0] = 0.0f;
         temporary[1] = 0.0f;        
@@ -74,7 +146,11 @@ void Imu::calibration(float *G_off,int32_t *step)
             G_off[0] = temporary[0]/5000.0f;
             G_off[1] = temporary[1]/5000.0f;
             G_off[2] = temporary[2]/5000.0f;
-            *step = 3;
+            calibration_step = 3;
+            logging::info("imu offset x : %f\n", G_off[0]);
+            logging::info("imu offset y : %f\n", G_off[1]);
+            logging::info("imu offset z : %f\n", G_off[2]);
+            //Board::GetInstance().nvm_->save_nvm_data();
         }else
         {
             temporary[0] += raw_data.gyro.axis[0];
@@ -95,17 +171,17 @@ esp_err_t Imu::update(float *G_off)
         if(fifo_count>0)
         {
             if(icm42688_read_register(&icm42688_spi,FIFO_DATA, buffer, (fifo_count>80)?80:fifo_count) == ESP_OK)
-            {;
+            {
                 uint16_t i;
                 int32_t acc[3] = {
-                    combine_20bit_signed(buffer[1], buffer[2], buffer[17]>>4),//
-                    combine_20bit_signed(buffer[3], buffer[4], buffer[18]>>4),//
-                    combine_20bit_signed(buffer[5], buffer[6], buffer[19]>>4)//
+                    combine_20bit_signed(buffer[1], buffer[2], buffer[17]>>4),//x
+                    combine_20bit_signed(buffer[3], buffer[4], buffer[18]>>4),//y
+                    combine_20bit_signed(buffer[5], buffer[6], buffer[19]>>4)//z
                     };
                 int32_t g[3]={
-                    combine_20bit_signed(buffer[7], buffer[8], buffer[17]&0xf),//
-                    combine_20bit_signed(buffer[9], buffer[10], buffer[18]&0xf),//
-                    combine_20bit_signed(buffer[11], buffer[12], buffer[19]&0xf)//
+                    combine_20bit_signed(buffer[7], buffer[8], buffer[17]&0xf),//x
+                    combine_20bit_signed(buffer[9], buffer[10], buffer[18]&0xf),//y
+                    combine_20bit_signed(buffer[11], buffer[12], buffer[19]&0xf)//z
                 };
                 int16_t temp = buffer[13]<<8|buffer[14];
 
@@ -113,18 +189,19 @@ esp_err_t Imu::update(float *G_off)
                 for(i = 0; i < 3; i++)
                 {
                     data.acc.axis[i] = raw_data.acc.axis[i] = acc[i] * G_PER_LSB ; 
-                    raw_data.gyro.axis[i] = g[i]* (DEG_PER_LSB); //*DEG2RAD
+                    raw_data.gyro.axis[i] = g[i]* (DEG_PER_LSB);
                     data.gyro.axis[i] = raw_data.gyro.axis[i] - G_off[i];
                 }
-
+                imuUpdate(raw_data.acc, raw_data.gyro, &data.pose, 0.001f);
+                calibration(G_off);
                 return ESP_OK;
             }
-            ESP_LOGE("ICM42688", "Failed to read FIFO data");
+            logging::error("ICM42688", "Failed to read FIFO data\n");
         }
     }
     else
     {
-        ESP_LOGE("ICM42688", "Failed to read FIFO count");
+        logging::error("ICM42688", "Failed to read FIFO count\n");
     }
     return ESP_FAIL;
 }
@@ -132,22 +209,24 @@ esp_err_t Imu::update(float *G_off)
 Imu::Imu(imu_config_t *config)
 {
   // SPI
-    spi_bus_config_t buscfg = {0};
+    spi_bus_config_t buscfg;
+    memset(&buscfg, 0, sizeof(buscfg));
     buscfg.mosi_io_num = config->mosi_io_num;
     buscfg.miso_io_num = config->miso_io_num;
     buscfg.sclk_io_num = config->sclk_io_num;
     buscfg.quadwp_io_num = -1;
     buscfg.quadhd_io_num = -1;
-    buscfg.max_transfer_sz = 64;
+    buscfg.max_transfer_sz = 80;
 
     ESP_ERROR_CHECK(spi_bus_initialize(config->host, &buscfg, SPI_DMA_CH_AUTO));
 
 
-    spi_device_interface_config_t spi_cfg = {0};
-    spi_cfg.address_bits = 8; // address bits
+    spi_device_interface_config_t spi_cfg;
+    memset(&spi_cfg, 0, sizeof(spi_cfg));
+    spi_cfg.address_bits = 8;
     spi_cfg.mode = 3;
     spi_cfg.cs_ena_pretrans = 1; // CS pre-transmission delay in SPI bit-cycles
-    spi_cfg.clock_speed_hz = 10000000; // S2/S3 can work with 26 Mhz, but esp32 seems only work up to 20 Mhz
+    spi_cfg.clock_speed_hz = 10000000; //
     spi_cfg.spics_io_num = config->spics_io_num; // manual control CS
     spi_cfg.flags = SPI_DEVICE_HALFDUPLEX; // 启用半双工模式
     spi_cfg.queue_size = 3;
