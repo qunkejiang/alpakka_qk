@@ -45,9 +45,6 @@ void NVM::config_profile_default_all()
 {
     for (int i = 0; i < NVM_PROFILE_SLOTS; i++) {
         config_profile_default(i, i);
-    }
-    for (int i = 0; i < NVM_PROFILE_SLOTS; i++)
-    {
         save_profile(i);
     }
 }
@@ -55,7 +52,6 @@ void NVM::config_profile_default_all()
 
 esp_err_t NVM::save_nvm_data()
 {
-    //nvs_open("nvs", NVS_READWRITE, &nvs_handle);
     nvs_set_blob(nvs_handle, "nvm_data", &nvm_data, sizeof(Config_t));//缓存数据
     nvs_commit(nvs_handle);//提交缓存数据
     return ESP_OK;

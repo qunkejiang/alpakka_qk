@@ -10,8 +10,8 @@
 #define VBUS_REMOVE  (0x04)
 #define CHARGING_DONE (0x08)
 #define CHARGING_START (0x10)
-#define NEGATIVE_EDGE (0x10)
-#define POSITIVE_EDGE (0x20)
+#define NEGATIVE_EDGE (0x20)
+#define POSITIVE_EDGE (0x40)
 
 struct axp2101_data_t
 {

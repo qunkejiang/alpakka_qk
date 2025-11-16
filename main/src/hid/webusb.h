@@ -2,8 +2,7 @@
 // Copyright (C) 2022, Input Labs Oy.
 
 #pragma once
-// #include <stdbool.h>
-// #include "common.h"
+
 #include "ctrl.h"
 
 #define WEBUSB_BUFFER_SIZE 2048

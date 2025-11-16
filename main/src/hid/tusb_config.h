@@ -293,8 +293,6 @@
     HID_INPUT         ( HID_DATA | HID_VARIABLE | HID_ABSOLUTE ) ,\
   HID_COLLECTION_END
 
-// bool usb_wait_for_init(int16_t timeout);
-// bool usb_is_connected();
 
 typedef enum  _ReportID {
     REPORT_KEYBOARD = 1,

@@ -2,9 +2,6 @@
 #include "axp2101reg.h"
 #include "board.h"
 
-#include "logging.h"
-#include "driver/gpio.h"
-
 
 
 

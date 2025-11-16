@@ -46,9 +46,7 @@
 #include "hid.h"
 #include "board.h"
 #include "xinput.h"
-#include "common.h"
 #include "webusb.h"
-#include "button.h"
 
 // Toggle to prevent any further communication. Main use case being turning it
 // off while the protocol is being changed to avoid incoherent outputs.
@@ -239,26 +237,27 @@ void hid::report_keyboard() {
             }
         }
     }
-    // Modifiers.
     uint8_t modifiers = 0;
     for(int i=0; i<8; i++) {
         // Any value bigger than 1 consolidates to 1 (with !!).
         modifiers += !!state_matrix[KEY_CONTROL_LEFT + i] << i;
     }
-    // Create report.
+    if((keys_available==6)&&(modifiers==0))
+        return;
+    // Modifiers.
     KeyboardReport report;
     report.modifier = modifiers;
     memcpy(report.keycode, keys, 6);
-    tud_hid_report(REPORT_KEYBOARD, &report, sizeof(report));
-    // logging::info("report_keyboard mod:%02x key:%02x %02x %02x %02x %02x %02x\n",
-    //     report.modifier,
-    //     report.keycode[0],
-    //     report.keycode[1],
-    //     report.keycode[2],
-    //     report.keycode[3],
-    //     report.keycode[4],
-    //     report.keycode[5]
-    // );
+    //tud_hid_report(REPORT_KEYBOARD, &report, sizeof(report));
+    logging::debug_uart("report_keyboard mod:%02x key:%02x %02x %02x %02x %02x %02x\n",
+        report.modifier,
+        report.keycode[0],
+        report.keycode[1],
+        report.keycode[2],
+        report.keycode[3],
+        report.keycode[4],
+        report.keycode[5]
+    );
 }
 
 void hid::report_mouse() {
@@ -408,7 +407,7 @@ void hid::report_wired() {
         if (tud_hid_ready()) {
             webusb_read();
             webusb_flush();
-            // report_keyboard();
+            report_keyboard();
             // report_mouse();
             // if (Board::get_protocol() == PROTOCOL_GENERIC)
             //     report_gamepad();

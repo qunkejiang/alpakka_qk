@@ -1,6 +1,4 @@
 #include "lcd_display.h"
-
-#include <vector>
 #include <esp_lvgl_port.h>
 #include "logging.h"
 

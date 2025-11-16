@@ -1,7 +1,6 @@
 #ifndef BACKLIGHT_H
 #define BACKLIGHT_H
 
-#include <functional>
 
 #include <driver/gpio.h>
 #include <driver/ledc.h>

@@ -1,5 +1,4 @@
 #include "board.h"
-#include "logging.h"
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <driver/i2c_master.h>
@@ -60,7 +59,7 @@ const gc9a01_lcd_init_cmd_t gc9d01n_lcd_init_cmds[] = {
 };
 void Board::Init_LCD_Display() {
 
-    logging::info( "Init GC9D01N\n");
+    logging::info( "Init LCD Display\n");
     spi_bus_config_t buscfg;
     memset(&buscfg, 0, sizeof(buscfg));
     buscfg.mosi_io_num = DISPLAY_MOSI;
@@ -109,11 +108,13 @@ void Board::Init_LCD_Display() {
 
 void Board::Init_Backlight() 
 {
+    logging::info( "Init Backlight\n");
     backlight_ = new PwmBacklight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT,DISPLAY_BACKLIGHT_TIMER,DISPLAY_BACKLIGHT_CHANNEL);
     backlight_->SetBrightnessImpl(50+nvm_->nvm_data.backlight*40);
 }
 void Board::Init_NVM()
 {
+    logging::info( "Init NVM\n");
     nvm_ = new NVM();
 }
 
@@ -212,7 +213,7 @@ void Board::Init() {
     Init_Matrix_Keyboard();//矩阵键盘
     do
     {
-        vTaskDelay(pdMS_TO_TICKS(100));
+        vTaskDelay(pdMS_TO_TICKS(50));
     } while ( keyboard_->key_value[BUTTON_START_2>>4]&(1<<(BUTTON_START_2&0xf)));
     Init_NVM();//数据保存
     Init_USB();//USB

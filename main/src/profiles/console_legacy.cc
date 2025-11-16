@@ -3,8 +3,6 @@
 #include "profiles_default.h"
 
 
-
-
 void config_profile_default_console_legacy(CtrlProfile *profile){
     // Metadata.
     profile->sections[SECTION_META].meta = {

@@ -97,8 +97,8 @@ void joystick::calibration(int16_t *off)
         {
             for (int i = 0; i < JOYSTICK_CHANNEL_NUM; i++)
             {
-                off[i] = temporary[i]/5000.0f;
-                logging::info("joystick offset %d : %f\n", i, off[i]);
+                off[i] = temporary[i]/5000;
+                logging::info("joystick offset %d : %d\n", i, off[i]);
             }
             //Board::GetInstance().nvm_->save_nvm_data();
             calibration_step = 3;
