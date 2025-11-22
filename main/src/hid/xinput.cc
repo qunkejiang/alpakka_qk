@@ -56,7 +56,9 @@ static bool xinput_xfer_cb(
 }
 
 static usbd_class_driver_t const xinput_driver = {
+    .name            = "XInput",
     .init            = xinput_init,
+    .deinit          = NULL,
     .reset           = xinput_reset,
     .open            = xinput_open,
     .control_xfer_cb = xinput_control_xfer_cb,

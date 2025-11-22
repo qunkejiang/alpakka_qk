@@ -53,6 +53,7 @@ typedef struct __packed _GamepadReport {
 class hid
 {
 private:
+
     static void procedure_press(uint8_t procedure);
     static void procedure_release(uint8_t procedure);
     static float axis(float value,uint8_t matrix_index_pos, uint8_t matrix_index_neg);
@@ -61,7 +62,7 @@ private:
     static void report_gamepad();
     static void report_xinput();
     
-    static void macro(uint8_t index); 
+    static void macro(void *arg); 
     static void thanks(void *arg);
 public:
     //hid() {};

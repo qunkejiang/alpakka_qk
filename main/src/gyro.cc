@@ -61,7 +61,6 @@ void Gyro::report_absolute() {
     else        gyro_absolute_output(-x, gyro.actions_x_neg, &(gyro.pressed_x_neg));
     if (y >= 0) gyro_absolute_output( y, gyro.actions_y_pos, &(gyro.pressed_y_pos));
     else        gyro_absolute_output(-y, gyro.actions_y_neg, &(gyro.pressed_y_neg));
-    // printf("\r%6.1f %6.1f %6.1f", x*100, y*100, z*100);
 }
 
 void Gyro::report_incremental() {
@@ -69,9 +68,9 @@ void Gyro::report_incremental() {
      
     Axis3f imu_gyro = Board::get_imu_data()->gyro;
     float multiplier = Board::get_sens_mouse_values();
-    float x = imu_gyro.x  * multiplier ;
-    float y = imu_gyro.y  * multiplier ;
-    float z = imu_gyro.z  * multiplier ;
+    float x = -imu_gyro.z  * multiplier ;//x轴是z轴
+    float y = -imu_gyro.y  * multiplier ;
+    float z = imu_gyro.x  * multiplier ;//z轴是x轴
     // x = x/(2-x);//取消非线性
     // y = y/(2-y);
     // z = z/(2-z);

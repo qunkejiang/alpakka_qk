@@ -51,6 +51,14 @@
 // Toggle to prevent any further communication. Main use case being turning it
 // off while the protocol is being changed to avoid incoherent outputs.
 
+// bool synced_keyboard = false;
+// bool synced_mouse = false;
+// bool synced_gamepad = false;
+
+bool synced_keyboard = true;
+bool synced_mouse = true;
+bool synced_gamepad = true;
+
 uint8_t hid::state_matrix[PROC_MAX] = {0,};
 float hid::mouse_x = 0;
 float hid::mouse_y = 0;
@@ -59,21 +67,20 @@ float hid::gamepad_axis_data[6] = {0,};
 
 void hid::procedure_press(uint8_t procedure){//qk
     profile *profile = Board::GetInstance().profile_;
-
     if (procedure == PROC_HOME) Board::set_profile(PROFILE_HOME); // Hold home.
     if (procedure == PROC_HOME_GAMEPAD) logging::info("HOME_GAMEPAD true\n");//profile_set_home_gamepad(true);  // Double-click-hold home.
-    if (procedure == PROC_PROFILE_1) Board::set_profile(1);
-    if (procedure == PROC_PROFILE_2) Board::set_profile(2);
-    if (procedure == PROC_PROFILE_3) Board::set_profile(3);
-    if (procedure == PROC_PROFILE_4) Board::set_profile(4);
-    if (procedure == PROC_PROFILE_5) Board::set_profile(5);
-    if (procedure == PROC_PROFILE_6) Board::set_profile(6);
-    if (procedure == PROC_PROFILE_7) Board::set_profile(7);
-    if (procedure == PROC_PROFILE_8) Board::set_profile(8);
-    if (procedure == PROC_PROFILE_9) Board::set_profile(9);
-    if (procedure == PROC_PROFILE_10) Board::set_profile(10);
-    if (procedure == PROC_PROFILE_11) Board::set_profile(11);
-    if (procedure == PROC_PROFILE_12) Board::set_profile(12);
+    if (procedure == PROC_PROFILE_1) Board::set_profile(PROFILE_FPS_FUSION);
+    if (procedure == PROC_PROFILE_2) Board::set_profile(PROFILE_RACING);
+    if (procedure == PROC_PROFILE_3) Board::set_profile(PROFILE_CONSOLE);
+    if (procedure == PROC_PROFILE_4) Board::set_profile(PROFILE_DESKTOP);
+    if (procedure == PROC_PROFILE_5) Board::set_profile(PROFILE_FPS_WASD);
+    if (procedure == PROC_PROFILE_6) Board::set_profile(PROFILE_FLIGHT);
+    if (procedure == PROC_PROFILE_7) Board::set_profile(PROFILE_CONSOLE_LEGACY);
+    if (procedure == PROC_PROFILE_8) Board::set_profile(PROFILE_RTS);
+    if (procedure == PROC_PROFILE_9) Board::set_profile(PROFILE_CUSTOM_1);
+    if (procedure == PROC_PROFILE_10) Board::set_profile(PROFILE_CUSTOM_2);
+    if (procedure == PROC_PROFILE_11) Board::set_profile(PROFILE_CUSTOM_3);
+    if (procedure == PROC_PROFILE_12) Board::set_profile(PROFILE_CUSTOM_4);
     if (procedure == PROC_TUNE_UP) logging::info("TUNE_UP\n");//config_tune(1);
     if (procedure == PROC_TUNE_DOWN) logging::info("TUNE_DOWN\n");//config_tune(0);
     if (procedure == PROC_TUNE_OS) logging::info("TUNE_OS\n");//config_tune_set_mode(procedure);
@@ -88,7 +95,7 @@ void hid::procedure_press(uint8_t procedure){//qk
     }
     if (procedure == PROC_RESTART) esp_restart();
     if (procedure == PROC_BOOTSEL) logging::info("BOOTSEL\n");//power_bootsel();  // TODO: BOOTSEL_OR_PAIR
-    if (procedure == PROC_THANKS) xTaskCreatePinnedToCore(thanks, "hid_thanks", 1024, NULL, 5, NULL, 1);
+    if (procedure == PROC_THANKS) xTaskCreatePinnedToCore(thanks, "hid_thanks", 1024, NULL, 2, NULL, 1);
     if (procedure == PROC_IGNORE_LED_WARNINGS) logging::info("IGNORE_LED_WARNINGS\n");//config_ignore_problems();
     if (procedure == PROC_SLEEP) logging::info("SLEEP\n");//power_dormant();
     // Scrollwheel alternative modes. (Used for example in Racing profile).
@@ -99,21 +106,18 @@ void hid::procedure_press(uint8_t procedure){//qk
     if (procedure == PROC_ROTARY_MODE_4) profile->profiles.rotary.set_mode(4);
     if (procedure == PROC_ROTARY_MODE_5) profile->profiles.rotary.set_mode(5);
     // Macros.
-    if (procedure == PROC_MACRO_1) macro(1);
-    if (procedure == PROC_MACRO_2) macro(2);
-    if (procedure == PROC_MACRO_3) macro(3);
-    if (procedure == PROC_MACRO_4) macro(4);
-    if (procedure == PROC_MACRO_5) macro(5);
-    if (procedure == PROC_MACRO_6) macro(6);
-    if (procedure == PROC_MACRO_7) macro(7);
-    if (procedure == PROC_MACRO_8) macro(8);
+    if (procedure == PROC_MACRO_1) xTaskCreatePinnedToCore(macro, "hid_macro_1", 1024, (void *)1, 2, NULL, 1);
+    if (procedure == PROC_MACRO_2) xTaskCreatePinnedToCore(macro, "hid_macro_2", 1024, (void *)2, 2, NULL, 1);
+    if (procedure == PROC_MACRO_3) xTaskCreatePinnedToCore(macro, "hid_macro_3", 1024, (void *)3, 2, NULL, 1);
+    if (procedure == PROC_MACRO_4) xTaskCreatePinnedToCore(macro, "hid_macro_4", 1024, (void *)4, 2, NULL, 1);
+    if (procedure == PROC_MACRO_5) xTaskCreatePinnedToCore(macro, "hid_macro_5", 1024, (void *)5, 2, NULL, 1);
+    if (procedure == PROC_MACRO_6) xTaskCreatePinnedToCore(macro, "hid_macro_6", 1024, (void *)6, 2, NULL, 1);
+    if (procedure == PROC_MACRO_7) xTaskCreatePinnedToCore(macro, "hid_macro_7", 1024, (void *)7, 2, NULL, 1);
+    if (procedure == PROC_MACRO_8) xTaskCreatePinnedToCore(macro, "hid_macro_8", 1024, (void *)8, 2, NULL, 1);
 }
 
 void hid::procedure_release(uint8_t procedure) {
-    if (procedure == PROC_HOME) 
-    {
-        Board::set_profile(Board::get_nvm_data()->profile_index); // Release home.
-    }
+    if (procedure == PROC_HOME) Board::set_profile(Board::get_nvm_data()->profile_index);
     if (procedure == PROC_HOME_GAMEPAD) logging::info("HOME_GAMEPAD false\n");//profile_set_home_gamepad(false);
 }
 
@@ -122,6 +126,9 @@ void hid::press(uint8_t key) {
     else if (key >= PROC_HOME) procedure_press(key);
     else {
         state_matrix[key] += 1;
+        if (key >= GAMEPAD_UP) synced_gamepad = false;
+        else if (key >= MOUSE_1) synced_mouse = false;
+        else synced_keyboard = false;
     }
     logging::debug_uart("press %d\n", key);
 }
@@ -134,6 +141,9 @@ void hid::release(uint8_t key) {
     else {
         if (state_matrix[key] > 0) {  // Do not allow to wrap / go negative.
             state_matrix[key] -= 1;
+            if (key >= GAMEPAD_UP) synced_gamepad = false;
+            else if (key >= MOUSE_1) synced_mouse = false;
+            else synced_keyboard = false;
         }
     }
     logging::debug_uart("release %d\n", key);
@@ -153,43 +163,43 @@ void hid::release_multiple(uint8_t *keys) {
     }
 }
 
+void hid::release_multiple_later(uint8_t *keys, uint16_t delay) {
+    logging::debug_uart("release_multiple_later %d\n", delay);
+    TimerHandle_t xTimer = xTimerCreate(
+        "TimerName",                
+        delay / portTICK_PERIOD_MS, 
+        pdFALSE,                     // 自动重载（pdTRUE：周期性，pdFALSE：单次）
+        keys,                       
+        release_multiple_later_callback              // 回调函数
+    );
+    if (xTimer != NULL) {
+        // 启动定时器
+        xTimerStart(xTimer, 0);
+    }
+}
+
+
 void hid::release_multiple_later_callback(TimerHandle_t xTimer) {
     uint8_t *keys = (uint8_t *)pvTimerGetTimerID(xTimer);
     release_multiple(keys);
 }
-void hid::release_multiple_later(uint8_t *keys, uint16_t delay) {
-    // TimerHandle_t xTimer = xTimerCreate(
-    //     "TimerName",                
-    //     delay / portTICK_PERIOD_MS, 
-    //     pdFALSE,                     // 自动重载（pdTRUE：周期性，pdFALSE：单次）
-    //     keys,                       
-    //     release_multiple_later_callback              // 回调函数
-    // );
-    // if (xTimer != NULL) {
-    //     // 启动定时器
-    //     xTimerStart(xTimer, 0);
-    // }
-}
 
 
 
-
-
-void hid::macro(uint8_t index) {//qk
-     logging::info("MACRO %d", index);
-//     uint8_t section = SECTION_MACRO_1 + ((index - 1) / 2);
-//     uint8_t subindex = (index - 1) % 2;
-//   CtrlProfile *profile = config_profile_read(profile_get_active_index(false));
-//     uint8_t *macro = profile->sections[section].macro.macro[subindex];
-//     if (alarms > 0) return;  // Disallows parallel macros. TODO fix.
-//     uint16_t time = 10;
-//     for(uint8_t i=0; i<28; i++) {
-//         if (macro[i] == 0) break;
-//         hid_press_later(macro[i], time);
-//         time += 10;
-//         hid_release_later(macro[i], time);
-//         time += 10;
-//     }
+void hid::macro(void *arg) {
+    uint8_t index = static_cast<uint8_t>(reinterpret_cast<uintptr_t>(arg));
+    logging::info("MACRO %d", index);
+    uint8_t section = SECTION_MACRO_1 + ((index - 1) / 2);
+    uint8_t subindex = (index - 1) % 2;
+    CtrlProfile *ctrl_profile = Board::get_profile(Board::get_nvm_data()->profile_index);
+    uint8_t *macro = ctrl_profile->sections[section].macro.macro[subindex];
+    for(uint8_t i=0; i<28; i++) {
+        if (macro[i] == 0) break;
+        press(macro[i]);
+        vTaskDelay(5);
+        release(macro[i]);
+        vTaskDelay(5);
+    }
 }
 
 bool hid::is_axis(uint8_t key) {
@@ -199,12 +209,77 @@ bool hid::is_axis(uint8_t key) {
 void hid::mouse_move(float x, float y) {
     mouse_x += x;
     mouse_y += y;
+    synced_mouse = false;
 }
 
 void hid::gamepad_axis(GamepadAxis axis, float value) {
     gamepad_axis_data[axis] += value;  // Multiple inputs can be combined.
 }
 
+
+void hid::report_mouse() {
+    // Create button bitmask.
+    uint8_t buttons = 0;
+    for(int i=0; i<5; i++) {
+        buttons |= (!!state_matrix[MOUSE_1 + i]) << i;
+    }
+    int8_t scroll = state_matrix[MOUSE_SCROLL_UP] - state_matrix[MOUSE_SCROLL_DOWN];
+    state_matrix[MOUSE_SCROLL_UP] = 0;
+    state_matrix[MOUSE_SCROLL_DOWN] = 0;
+    // Create report.
+    int16_t x = (int16_t)constrain(mouse_x, -32767.f, 32767.f);
+    int16_t y = (int16_t)constrain(mouse_y, -32767.f, 32767.f);
+    mouse_x -= (float)x;
+    mouse_y -= (float)y;
+    MouseReport report = {buttons, x, y, scroll, 0};
+    tud_hid_report(REPORT_MOUSE, &report, sizeof(report));
+    synced_mouse = true;
+    static uint32_t last_report_mouse=0;
+    if(++last_report_mouse < 100) return;
+    last_report_mouse = 0;
+    logging::debug_uart("report_mouse btn:%02x x:%d y:%d scroll:%d\n",
+        report.buttons,
+        report.x,
+        report.y,
+        report.scroll
+    );
+}
+
+void hid::report_keyboard() {
+    uint8_t keys[6] = {0};
+    uint8_t keys_available = 6;
+    for(int i=0; i<=KEY_F24; i++) {
+        if (state_matrix[i] >= 1) {
+            keys[keys_available - 1] = (uint8_t)i;
+            keys_available--;
+            if (keys_available == 0) {
+                break;
+            }
+        }
+    }
+    // Modifiers.
+    uint8_t modifiers = 0;
+    for(int i=0; i<8; i++) {
+        // Any value bigger than 1 consolidates to 1 (with !!).
+        modifiers |= (!!state_matrix[KEY_CONTROL_LEFT + i]) << i;
+    }
+    KeyboardReport report;
+    report.modifier = modifiers;
+    report.reserved = 0;
+    memcpy(report.keycode, keys, 6);
+    tud_hid_report(REPORT_KEYBOARD, &report, sizeof(report));
+    synced_keyboard = true;
+    logging::debug_uart("report_keyboard mod:%02x key:%02x %02x %02x %02x %02x %02x len:%d\n",
+        report.modifier,
+        report.keycode[0],
+        report.keycode[1],
+        report.keycode[2],
+        report.keycode[3],
+        report.keycode[4],
+        report.keycode[5],
+        sizeof(report)
+    );
+}
 
 float hid::axis(
     float value,
@@ -222,87 +297,26 @@ float hid::axis(
 }
 
 
-
-
-void hid::report_keyboard() {
-    // Keys.
-    uint8_t keys[6] = {0};
-    uint8_t keys_available = 6;
-    for(int i=0; i<=KEY_F24; i++) {
-        if (state_matrix[i] >= 1) {
-            keys[keys_available - 1] = (uint8_t)i;
-            keys_available--;
-            if (keys_available == 0) {
-                break;
-            }
-        }
-    }
-    uint8_t modifiers = 0;
-    for(int i=0; i<8; i++) {
-        // Any value bigger than 1 consolidates to 1 (with !!).
-        modifiers += !!state_matrix[KEY_CONTROL_LEFT + i] << i;
-    }
-    if((keys_available==6)&&(modifiers==0))
-        return;
-    // Modifiers.
-    KeyboardReport report;
-    report.modifier = modifiers;
-    memcpy(report.keycode, keys, 6);
-    //tud_hid_report(REPORT_KEYBOARD, &report, sizeof(report));
-    logging::debug_uart("report_keyboard mod:%02x key:%02x %02x %02x %02x %02x %02x\n",
-        report.modifier,
-        report.keycode[0],
-        report.keycode[1],
-        report.keycode[2],
-        report.keycode[3],
-        report.keycode[4],
-        report.keycode[5]
-    );
-}
-
-void hid::report_mouse() {
-    // Create button bitmask.
-    uint8_t buttons = 0;
-    for(int i=0; i<5; i++) {
-        buttons |= (!!state_matrix[MOUSE_1 + i]) << i;
-    }
-    int8_t scroll = state_matrix[MOUSE_SCROLL_UP] - state_matrix[MOUSE_SCROLL_DOWN];
-    // Create report.
-    int16_t x = (int16_t)constrain(mouse_x, -32767.f, 32767.f);
-    int16_t y = (int16_t)constrain(mouse_y, -32767.f, 32767.f);
-    mouse_x -= (float)x;
-    mouse_y -= (float)y;
-    MouseReport report = {buttons, x, y, scroll, 0};
-    tud_hid_report(REPORT_MOUSE, &report, sizeof(report));
-    // logging::info("report_mouse btn:%02x x:%04x y:%04x scroll:%02x\n",
-    //     report.buttons,
-    //     report.x,
-    //     report.y,
-    //     report.scroll
-    // );
-}
-
 void hid::report_gamepad() {  // Sorted so the most common assigned buttons are lower and easier to
     // identify in-game.
     uint32_t buttons = (
         // Any value bigger than 1 consolidates to 1 (with !!).
-        ((!!state_matrix[GAMEPAD_A])      <<  0) +
-        ((!!state_matrix[GAMEPAD_B])      <<  1) +
-        ((!!state_matrix[GAMEPAD_X])      <<  2) +
-        ((!!state_matrix[GAMEPAD_Y])      <<  3) +
-        ((!!state_matrix[GAMEPAD_L1])     <<  4) +
-        ((!!state_matrix[GAMEPAD_R1])     <<  5) +
-        ((!!state_matrix[GAMEPAD_L3])     <<  6) +
-        ((!!state_matrix[GAMEPAD_R3])     <<  7) +
-        ((!!state_matrix[GAMEPAD_LEFT])   <<  8) +
-        ((!!state_matrix[GAMEPAD_RIGHT])  <<  9) +
-        ((!!state_matrix[GAMEPAD_UP])     << 10) +
-        ((!!state_matrix[GAMEPAD_DOWN])   << 11) +
-        ((!!state_matrix[GAMEPAD_SELECT]) << 12) +
-        ((!!state_matrix[GAMEPAD_START])  << 13) +
+        ((!!state_matrix[GAMEPAD_A])      <<  0) |
+        ((!!state_matrix[GAMEPAD_B])      <<  1) |
+        ((!!state_matrix[GAMEPAD_X])      <<  2) |
+        ((!!state_matrix[GAMEPAD_Y])      <<  3) |
+        ((!!state_matrix[GAMEPAD_L1])     <<  4) |
+        ((!!state_matrix[GAMEPAD_R1])     <<  5) |
+        ((!!state_matrix[GAMEPAD_L3])     <<  6) |
+        ((!!state_matrix[GAMEPAD_R3])     <<  7) |
+        ((!!state_matrix[GAMEPAD_LEFT])   <<  8) |
+        ((!!state_matrix[GAMEPAD_RIGHT])  <<  9) |
+        ((!!state_matrix[GAMEPAD_UP])     << 10) |
+        ((!!state_matrix[GAMEPAD_DOWN])   << 11) |
+        ((!!state_matrix[GAMEPAD_SELECT]) << 12) |
+        ((!!state_matrix[GAMEPAD_START])  << 13) |
         ((!!state_matrix[GAMEPAD_HOME])   << 14)
     );
-    //qk gamepad_axis=0
     // Adjust range from [-1,1] to [-32767,32767].
     int16_t lx_report = axis(gamepad_axis_data[LX], GAMEPAD_AXIS_LX, GAMEPAD_AXIS_LX_NEG) * BIT_15;
     int16_t ly_report = axis(gamepad_axis_data[LY], GAMEPAD_AXIS_LY, GAMEPAD_AXIS_LY_NEG) * BIT_15;
@@ -313,6 +327,8 @@ void hid::report_gamepad() {  // Sorted so the most common assigned buttons are 
     // inconsistencies between games (not sure if a bug in Windows' DirectInput or TinyUSB).
     int16_t lz_report = ((axis(gamepad_axis_data[LZ], GAMEPAD_AXIS_LZ, 0) * 2) - 1) * BIT_15;
     int16_t rz_report = ((axis(gamepad_axis_data[RZ], GAMEPAD_AXIS_RZ, 0) * 2) - 1) * BIT_15;
+    
+    for(uint8_t i=0; i<6; i++) gamepad_axis_data[i] = 0;
     GamepadReport report = {
         lx_report,
         ly_report,
@@ -323,15 +339,16 @@ void hid::report_gamepad() {  // Sorted so the most common assigned buttons are 
         buttons,
     };
     tud_hid_report(REPORT_GAMEPAD, &report, sizeof(report));
-    // logging::info("report_gamepad lx:%04x ly:%04x rx:%04x ry:%04x lz:%04x rz:%04x btn:%08x\n",
-    //     report.lx,
-    //     report.ly,
-    //     report.rx,
-    //     report.ry,
-    //     report.lz,
-    //     report.rz,
-    //     report.buttons
-    // );
+    synced_gamepad = true;
+    logging::debug_uart("report_gamepad lx:%d ly:%d rx:%d ry:%d lz:%d rz:%d btn:%08x\n",
+        report.lx,
+        report.ly,
+        report.rx,
+        report.ry,
+        report.lz,
+        report.rz,
+        report.buttons
+    );
 }
 
 void hid::report_xinput() {
@@ -354,6 +371,8 @@ void hid::report_xinput() {
     // Adjust range from [0,1] to [0,255].
     int16_t lz_report = axis(gamepad_axis_data[LZ], GAMEPAD_AXIS_LZ, 0) * BIT_8;
     int16_t rz_report = axis(gamepad_axis_data[RZ], GAMEPAD_AXIS_RZ, 0) * BIT_8;
+    for(uint8_t i=0; i<6; i++) gamepad_axis_data[i] = 0;
+    
     XInputReport report = {
         .report_id   = 0,
         .report_size = XINPUT_REPORT_SIZE,
@@ -368,6 +387,8 @@ void hid::report_xinput() {
         .reserved    = {0, 0, 0, 0, 0, 0}
     };
     xinput_send_report(&report);
+    synced_gamepad = true;
+
 }
 
 
@@ -401,21 +422,34 @@ void hid::thanks(void *arg)
     }
 }
 
+ReportType hid_get_priority() {
+
+    if (!synced_keyboard) return REPORT_KEYBOARD;
+    if (!synced_mouse) return REPORT_MOUSE;
+    if (!synced_gamepad) {
+        if (Board::get_protocol() == PROTOCOL_GENERIC) return REPORT_GAMEPAD;
+        else return REPORT_XINPUT;
+    }
+    return REPORT_NONE;
+}
+
 void hid::report_wired() {
+    ReportType device_to_report = hid_get_priority();
     tud_task();
     if (tud_ready()) {
         if (tud_hid_ready()) {
             webusb_read();
             webusb_flush();
-            report_keyboard();
-            // report_mouse();
-            // if (Board::get_protocol() == PROTOCOL_GENERIC)
-            //     report_gamepad();
+            if (device_to_report == REPORT_KEYBOARD)report_keyboard();
+            if (device_to_report == REPORT_MOUSE)report_mouse();
+            if (device_to_report == REPORT_GAMEPAD)report_gamepad();
         }
-        if (tud_suspended()) tud_remote_wakeup();
-        // if (Board::get_protocol() != PROTOCOL_GENERIC)
-        //     report_xinput();
-    } 
+        if (device_to_report == REPORT_XINPUT)
+        {
+            if (tud_suspended()) tud_remote_wakeup();
+            report_xinput();
+        }
+    }
 }
 
 

@@ -174,12 +174,12 @@ USB::USB()
     };
     usb_new_phy(&phy_conf, &phy_handle);
 
-    tusb_rhport_init_t dev_init = {
-        .role = TUSB_ROLE_DEVICE,
-        .speed = TUSB_SPEED_AUTO,
-    };
-    tusb_init(BOARD_TUD_RHPORT, &dev_init);
-    //tusb_init();
+    // tusb_rhport_init_t dev_init = {
+    //     .role = TUSB_ROLE_DEVICE,
+    //     .speed = TUSB_SPEED_AUTO,
+    // };
+    // tusb_init(BOARD_TUD_RHPORT, &dev_init);
+    tusb_init();
 }
 
 

@@ -154,64 +154,56 @@ void Thumbstick::report_8dir(ThumbstickPosition pos) {
 }
 
 void Thumbstick::report_daisywheel(Dir8 dir) {
-    static const uint8_t daisywheel_zu[9] = {0,7,3,1,5,8,2,6,4};
     static const Actions daisywheel_key[2][9][6] = {
         {
-            {   {KEY_NONE,0},{KEY_ESCAPE,0},{KEY_TAB,0},{KEY_SPACE,0},{KEY_BACKSPACE,0},{KEY_ENTER,0}   },
-            {   {KEY_1,0},{KEY_2,0},{KEY_A,0},{KEY_B,0},{KEY_C,0},{KEY_D,0}   },
-            {   {KEY_3,0},{KEY_4,0},{KEY_E,0},{KEY_F,0},{KEY_G,0},{KEY_H,0}   },
-            {   {KEY_5,0},{KEY_6,0},{KEY_I,0},{KEY_J,0},{KEY_K,0},{KEY_L,0}   },
-            {   {KEY_7,0},{KEY_8,0},{KEY_M,0},{KEY_N,0},{KEY_O,0},{KEY_P,0}   },
-            {   {KEY_9,0},{KEY_0,0},{KEY_Q,0},{KEY_R,0},{KEY_S,0},{KEY_T,0}   },
-            {   {KEY_MINUS,0},{KEY_EQUALS,0},{KEY_U,0},{KEY_V,0},{KEY_W,0},{KEY_X,0}   },
-            {   {KEY_BRACKET_LEFT,0},{KEY_BRACKET_RIGHT,0},{KEY_Y,0},{KEY_Z,0},{KEY_BACKSLASH,0},{KEY_QUOTE,0}   },
-            {   {KEY_SEMICOLON,0},{KEY_COMMA,0},{KEY_PERIOD,0},{KEY_SLASH,0},{KEY_CONTROL_LEFT, KEY_C,0},{KEY_CONTROL_LEFT, KEY_V,0}   },
+            {   {KEY_NONE},{KEY_ESCAPE},{KEY_TAB},{KEY_SPACE},{KEY_BACKSPACE},{KEY_ENTER}   },
+            {   {KEY_1},{KEY_2},{KEY_A},{KEY_B},{KEY_C},{KEY_D}   },
+            {   {KEY_3},{KEY_4},{KEY_E},{KEY_F},{KEY_G},{KEY_H}   },
+            {   {KEY_5},{KEY_6},{KEY_I},{KEY_J},{KEY_K},{KEY_L}   },
+            {   {KEY_7},{KEY_8},{KEY_M},{KEY_N},{KEY_O},{KEY_P}   },
+            {   {KEY_9},{KEY_0},{KEY_Q},{KEY_R},{KEY_S},{KEY_T}   },
+            {   {KEY_MINUS},{KEY_EQUALS},{KEY_U},{KEY_V},{KEY_W},{KEY_X}   },
+            {   {KEY_BRACKET_LEFT},{KEY_BRACKET_RIGHT},{KEY_Y},{KEY_Z},{KEY_BACKSLASH},{KEY_QUOTE}   },
+            {   {KEY_SEMICOLON},{KEY_COMMA},{KEY_PERIOD},{KEY_SLASH},{KEY_CONTROL_LEFT, KEY_C},{KEY_CONTROL_LEFT, KEY_V}   },
         },
         {
-            {   {KEY_NONE,0},{KEY_ESCAPE,0},{KEY_TAB,0},{KEY_SPACE,0},{KEY_BACKSPACE,0},{KEY_ENTER,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_1,0},{KEY_CONTROL_LEFT,KEY_2,0},{KEY_CONTROL_LEFT,KEY_A,0},{KEY_CONTROL_LEFT,KEY_B,0},{KEY_CONTROL_LEFT,KEY_C,0},{KEY_CONTROL_LEFT,KEY_D,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_3,0},{KEY_CONTROL_LEFT,KEY_4,0},{KEY_CONTROL_LEFT,KEY_E,0},{KEY_CONTROL_LEFT,KEY_F,0},{KEY_CONTROL_LEFT,KEY_G,0},{KEY_CONTROL_LEFT,KEY_H,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_5,0},{KEY_CONTROL_LEFT,KEY_6,0},{KEY_CONTROL_LEFT,KEY_I,0},{KEY_CONTROL_LEFT,KEY_J,0},{KEY_CONTROL_LEFT,KEY_K,0},{KEY_CONTROL_LEFT,KEY_L,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_7,0},{KEY_CONTROL_LEFT,KEY_8,0},{KEY_CONTROL_LEFT,KEY_M,0},{KEY_CONTROL_LEFT,KEY_N,0},{KEY_CONTROL_LEFT,KEY_O,0},{KEY_CONTROL_LEFT,KEY_P,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_9,0},{KEY_CONTROL_LEFT,KEY_0,0},{KEY_CONTROL_LEFT,KEY_Q,0},{KEY_CONTROL_LEFT,KEY_R,0},{KEY_CONTROL_LEFT,KEY_S,0},{KEY_CONTROL_LEFT,KEY_T,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_MINUS,0},{KEY_CONTROL_LEFT,KEY_EQUALS,0},{KEY_CONTROL_LEFT,KEY_U,0},{KEY_CONTROL_LEFT,KEY_V,0},{KEY_CONTROL_LEFT,KEY_W,0},{KEY_CONTROL_LEFT,KEY_X,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_BRACKET_LEFT,0},{KEY_CONTROL_LEFT,KEY_BRACKET_RIGHT,0},{KEY_CONTROL_LEFT,KEY_Y,0},{KEY_CONTROL_LEFT,KEY_Z,0},{KEY_CONTROL_LEFT,KEY_BACKSLASH,0},{KEY_CONTROL_LEFT,KEY_QUOTE,0}   },
-            {   {KEY_CONTROL_LEFT,KEY_SEMICOLON,0},{KEY_CONTROL_LEFT,KEY_COMMA,0},{KEY_CONTROL_LEFT,KEY_PERIOD,0},{KEY_CONTROL_LEFT,KEY_SLASH,0},{KEY_CONTROL_LEFT, KEY_C,0},{KEY_CONTROL_LEFT, KEY_V,0}   },
+            {   {KEY_NONE},{KEY_ESCAPE},{KEY_TAB},{KEY_SPACE},{KEY_BACKSPACE},{KEY_ENTER}   },
+            {   {KEY_SHIFT_LEFT,KEY_1},{KEY_SHIFT_LEFT,KEY_2},{KEY_SHIFT_LEFT,KEY_A},{KEY_SHIFT_LEFT,KEY_B},{KEY_SHIFT_LEFT,KEY_C},{KEY_SHIFT_LEFT,KEY_D}   },
+            {   {KEY_SHIFT_LEFT,KEY_3},{KEY_SHIFT_LEFT,KEY_4},{KEY_SHIFT_LEFT,KEY_E},{KEY_SHIFT_LEFT,KEY_F},{KEY_SHIFT_LEFT,KEY_G},{KEY_SHIFT_LEFT,KEY_H}   },
+            {   {KEY_SHIFT_LEFT,KEY_5},{KEY_SHIFT_LEFT,KEY_6},{KEY_SHIFT_LEFT,KEY_I},{KEY_SHIFT_LEFT,KEY_J},{KEY_SHIFT_LEFT,KEY_K},{KEY_SHIFT_LEFT,KEY_L}   },
+            {   {KEY_SHIFT_LEFT,KEY_7},{KEY_SHIFT_LEFT,KEY_8},{KEY_SHIFT_LEFT,KEY_M},{KEY_SHIFT_LEFT,KEY_N},{KEY_SHIFT_LEFT,KEY_O},{KEY_SHIFT_LEFT,KEY_P}   },
+            {   {KEY_SHIFT_LEFT,KEY_9},{KEY_SHIFT_LEFT,KEY_0},{KEY_SHIFT_LEFT,KEY_Q},{KEY_SHIFT_LEFT,KEY_R},{KEY_SHIFT_LEFT,KEY_S},{KEY_SHIFT_LEFT,KEY_T}   },
+            {   {KEY_SHIFT_LEFT,KEY_MINUS},{KEY_SHIFT_LEFT,KEY_EQUALS},{KEY_SHIFT_LEFT,KEY_U},{KEY_SHIFT_LEFT,KEY_V},{KEY_SHIFT_LEFT,KEY_W},{KEY_SHIFT_LEFT,KEY_X}   },
+            {   {KEY_SHIFT_LEFT,KEY_BRACKET_LEFT},{KEY_SHIFT_LEFT,KEY_BRACKET_RIGHT},{KEY_SHIFT_LEFT,KEY_Y},{KEY_SHIFT_LEFT,KEY_Z},{KEY_SHIFT_LEFT,KEY_BACKSLASH},{KEY_SHIFT_LEFT,KEY_QUOTE}   },
+            {   {KEY_SHIFT_LEFT,KEY_SEMICOLON},{KEY_SHIFT_LEFT,KEY_COMMA},{KEY_SHIFT_LEFT,KEY_PERIOD},{KEY_SHIFT_LEFT,KEY_SLASH},{KEY_VOLUME_UP},{KEY_VOLUME_DOWN}   },
         }
     };
-    set_var_keymouse_zu(daisywheel_zu[dir]);
+    const uint8_t BUTTON[6] = {BUTTON_START_1,BUTTON_START_2,BUTTON_Y,BUTTON_X,BUTTON_B,BUTTON_A};
+    set_var_keymouse_zu(dir);
     uint8_t keymouse_aa = get_var_keymouse_aa();
-    static bool BUTTON_START_1_state_old = false;
-    bool BUTTON_START_1_state = Board::get_key_value(BUTTON_START_1);
-    if (BUTTON_START_1_state) {
-        if((dir==DIR8_CENTER) &&  (BUTTON_START_1_state_old == false))
+    static uint8_t BUTTON_START[6] = {0,0,0,0,0};
+    for(uint8_t i=0;i<6;i++)
+    {
+        if(Board::get_key_value(BUTTON[i]))
         {
-            if(keymouse_aa)set_var_keymouse_aa(false);
-            else set_var_keymouse_aa(true);
+            if(BUTTON_START[i] ==0)
+            {
+                if((i==0)&&(dir==DIR8_CENTER))
+                {
+                    if(keymouse_aa)set_var_keymouse_aa(false);
+                    else set_var_keymouse_aa(true);
+                }
+                hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][i]);
+                BUTTON_START[i] = 0x80|(keymouse_aa<<4)|dir;
+            }  
+        }else
+        {
+            if(BUTTON_START[i])
+            {
+                hid::release_multiple((uint8_t *)daisywheel_key[(BUTTON_START[i]&0x10)>>4][BUTTON_START[i]&0xf][i]);
+                BUTTON_START[i] = 0;
+            }
         }
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][0]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][0], 10);
-    }
-    BUTTON_START_1_state_old = BUTTON_START_1_state;
-    if (Board::get_key_value(BUTTON_START_2)) {
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][1]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][1], 10);
-    }
-    if (Board::get_key_value(BUTTON_A)) {
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][2]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][2], 10);
-    }
-    if (Board::get_key_value(BUTTON_B)) {
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][3]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][3], 10);
-    }
-    if (Board::get_key_value(BUTTON_X)) {
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][4]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][4], 10);
-    }
-    if (Board::get_key_value(BUTTON_Y)) {
-        hid::press_multiple((uint8_t *)daisywheel_key[keymouse_aa][dir][5]);
-        hid::release_multiple_later((uint8_t *)daisywheel_key[keymouse_aa][dir][5], 10);
     }
 }
 void Thumbstick::report_alphanumeric(ThumbstickPosition pos) {

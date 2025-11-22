@@ -10,10 +10,10 @@ void joystick::InitContinuousADC(adc_channel_t *channel, uint8_t channel_num, ad
     adc_continuous_handle_t handle_d = NULL;
 
     adc_continuous_handle_cfg_t adc_config = {
-        .max_store_buf_size = JOYSTICK_READ_LEN * 4,
+        .max_store_buf_size = JOYSTICK_READ_LEN * 16,
         .conv_frame_size = JOYSTICK_READ_LEN,
         .flags = {
-            .flush_pool = 0,  // 初始化 flush_pool 为 0
+            .flush_pool = 1,  
         }
     };
     ESP_ERROR_CHECK(adc_continuous_new_handle(&adc_config, &handle_d));
@@ -48,12 +48,12 @@ esp_err_t joystick::update(int16_t *offset)
     uint8_t result[JOYSTICK_READ_LEN];
     uint32_t ret_num;
     float adc_value[4];
-    uint8_t thumbstick_smooth_samples = Board::GetInstance().nvm_->nvm_data.thumbstick_smooth_samples;
     ret = adc_continuous_read(handle, result, JOYSTICK_READ_LEN, &ret_num, 0);
     if (ret == ESP_OK)
     {
         adc_digi_output_data_t *p = reinterpret_cast<adc_digi_output_data_t*>(result);
         
+        uint8_t thumbstick_smooth_samples = Board::GetInstance().nvm_->nvm_data.thumbstick_smooth_samples;
         for (int i = 0; i < 4; ++i) {
             // 从 ADC 数据中提取值并存储到 adc_value 数组
             adc_raw[i] = p[i].type2.data;
@@ -72,8 +72,6 @@ esp_err_t joystick::update(int16_t *offset)
             position[i].radius=sqrtf(position[i].x*position[i].x+position[i].y*position[i].y);
         }
         calibration(offset);
-    }else{
-        logging::info("GetADCValues failed\n");
     }
     return ret; // No data read
 }

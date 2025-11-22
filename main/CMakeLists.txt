@@ -34,7 +34,7 @@ list(APPEND INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 
 idf_component_register(SRCS ${SOURCES}
-                    PRIV_REQUIRES spi_flash nvs_flash  fatfs esp_adc esp_driver_gpio driver usb
+                    PRIV_REQUIRES spi_flash nvs_flash  fatfs esp_adc esp_driver_gpio driver usb bt
                     INCLUDE_DIRS ${INCLUDE_DIRS}
                     )
 

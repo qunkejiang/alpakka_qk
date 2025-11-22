@@ -10,6 +10,7 @@ private:
     TaskHandle_t taskMonitorHandle  = NULL;
 public:
     static char* taskRuntimeBuffer;
+
     static void printTaskAndMemoryInfo(void *pvParameters);
     void toggleTaskMonitor(bool enable); 
     CPU();

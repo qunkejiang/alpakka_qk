@@ -6,7 +6,9 @@
 #include <stdbool.h>
 
 
-#define BOARD_TUD_RHPORT      0
+#define CFG_TUSB_MCU OPT_MCU_ESP32S3
+ 
+//#define BOARD_TUD_RHPORT      0
 
 #define BOARD_DEVICE_RHPORT_NUM 0
 #define BOARD_DEVICE_RHPORT_SPEED  OPT_MODE_FULL_SPEED
@@ -29,11 +31,11 @@
 #define ITF_WEBUSB 1
 #define ITF_XINPUT 2
 
-#define ADDR_HID_IN 0x86
-#define ADDR_WEBUSB_IN 0x83
-#define ADDR_WEBUSB_OUT 0x04
-#define ADDR_XINPUT_IN 0x81
-#define ADDR_XINPUT_OUT 0x02
+#define ADDR_HID_IN 0x81
+#define ADDR_WEBUSB_IN 0x82
+#define ADDR_WEBUSB_OUT 0x03
+#define ADDR_XINPUT_IN 0x84
+#define ADDR_XINPUT_OUT 0x05
 
 #define STRING_VENDOR "Input Labs"
 
@@ -294,13 +296,14 @@
   HID_COLLECTION_END
 
 
-typedef enum  _ReportID {
+typedef enum  _ReportType {
+    REPORT_NONE = 0,
     REPORT_KEYBOARD = 1,
     REPORT_MOUSE,
     REPORT_GAMEPAD,
     REPORT_XINPUT,
     REPORT_WEBUSB,
-} ReportID;
+} ReportType;
 
 typedef enum _Protocol {
     PROTOCOL_UNDEFINED = -1,

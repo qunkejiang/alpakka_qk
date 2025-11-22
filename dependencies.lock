@@ -52,7 +52,7 @@ dependencies:
       type: service
     version: 1.1.2
   espressif/tinyusb:
-    component_hash: aec03a6402b66695719fa1121b7d9eee8031922df5c8a3f4b54a51874f65bbd6
+    component_hash: 7fa5016d792d8e4025a8352b4fd4af7c124947647037e9d2449c9e0b47fdf663
     dependencies:
     - name: idf
       require: private
@@ -65,7 +65,7 @@ dependencies:
     - esp32s3
     - esp32p4
     - esp32h4
-    version: 0.18.0~5
+    version: 0.18.0~6
   espressif/touch_sensor_lowlevel:
     component_hash: b8d5f8c785c91619d4fe531c874c3897bede0428fb3fe854bea4048e12348e1f
     dependencies:
@@ -105,6 +105,6 @@ direct_dependencies:
 - espressif/touch_sensor_lowlevel
 - idf
 - lvgl/lvgl
-manifest_hash: 6dfd5f2094efbf5d38ce09ede438f305c6f5f476c79fb49fc40ed7fa6e6b01d4
+manifest_hash: 55a27374e50706d38579a8912443958178b6d690418ba8dfd58bc16e0a05d7de
 target: esp32s3
 version: 2.0.0

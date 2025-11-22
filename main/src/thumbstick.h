@@ -45,14 +45,14 @@ typedef enum Dir4_enum {
 
 typedef enum Dir8_enum {
     DIR8_CENTER,
-    DIR8_LEFT,
-    DIR8_RIGHT,
     DIR8_UP,
-    DIR8_DOWN,
-    DIR8_UP_LEFT,
     DIR8_UP_RIGHT,
-    DIR8_DOWN_LEFT,
+    DIR8_RIGHT,
     DIR8_DOWN_RIGHT,
+    DIR8_DOWN,
+    DIR8_DOWN_LEFT,
+    DIR8_LEFT,
+    DIR8_UP_LEFT,
 } Dir8;
 
 typedef struct Thumbstick_struct Thumbstick_t;

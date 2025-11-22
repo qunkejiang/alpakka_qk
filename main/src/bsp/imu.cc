@@ -3,6 +3,8 @@
 #include "common.h"
 #include <string.h>
 #include "logging.h"
+#include <esp_timer.h>
+#include "esp_log.h"
 
 
 #define IMU_SYNC_FREQ_HZ 32000
@@ -75,7 +77,7 @@ void imuUpdate(Axis3f acc, Axis3f gyro,pose_t *data, float dt)	//数据融合 �
 }
 
 inline int32_t combine_20bit_signed(uint8_t msb, uint8_t lsb, uint8_t ext) {
-    return ((msb << 24) | (lsb << 16) | (ext << 12)) >> 12;
+    return ((msb << 24L) | (lsb << 16L) | (ext << 12L)) >> 12L;
 }
 
 esp_err_t Imu::icm42688_read_register(spi_device_handle_t *spi,uint8_t reg, uint8_t *data, uint8_t len)
@@ -162,13 +164,15 @@ void Imu::calibration(float *G_off)
         break;
     }
 }
+
+
 esp_err_t Imu::update(float *G_off)
 {
     uint8_t buffer[80];
     if(icm42688_read_register(&icm42688_spi,FIFO_COUNTH, buffer, 2) == ESP_OK)
     {
         uint16_t fifo_count = (buffer[0]<<8)|buffer[1];
-        if(fifo_count>0)
+        if(fifo_count>=20)
         {
             if(icm42688_read_register(&icm42688_spi,FIFO_DATA, buffer, (fifo_count>80)?80:fifo_count) == ESP_OK)
             {
@@ -189,9 +193,11 @@ esp_err_t Imu::update(float *G_off)
                 for(i = 0; i < 3; i++)
                 {
                     data.acc.axis[i] = raw_data.acc.axis[i] = acc[i] * G_PER_LSB ; 
-                    raw_data.gyro.axis[i] = g[i]* (DEG_PER_LSB);
+                    raw_data.gyro.axis[i] = g[i] * (DEG_PER_LSB);
                     data.gyro.axis[i] = raw_data.gyro.axis[i] - G_off[i];
                 }
+                //logging::debug_uart("%f, %f, %f,%f\n",data.gyro.axis[0], data.gyro.axis[1], data.gyro.axis[2], data.temp);
+                
                 imuUpdate(raw_data.acc, raw_data.gyro, &data.pose, 0.001f);
                 calibration(G_off);
                 return ESP_OK;

@@ -59,7 +59,6 @@ const gc9a01_lcd_init_cmd_t gc9d01n_lcd_init_cmds[] = {
 };
 void Board::Init_LCD_Display() {
 
-    logging::info( "Init LCD Display\n");
     spi_bus_config_t buscfg;
     memset(&buscfg, 0, sizeof(buscfg));
     buscfg.mosi_io_num = DISPLAY_MOSI;
@@ -108,13 +107,11 @@ void Board::Init_LCD_Display() {
 
 void Board::Init_Backlight() 
 {
-    logging::info( "Init Backlight\n");
     backlight_ = new PwmBacklight(DISPLAY_BACKLIGHT_PIN, DISPLAY_BACKLIGHT_OUTPUT_INVERT,DISPLAY_BACKLIGHT_TIMER,DISPLAY_BACKLIGHT_CHANNEL);
     backlight_->SetBrightnessImpl(50+nvm_->nvm_data.backlight*40);
 }
 void Board::Init_NVM()
 {
-    logging::info( "Init NVM\n");
     nvm_ = new NVM();
 }
 
@@ -211,13 +208,7 @@ void Board::Init_profile()
 
 void Board::Init() {
     Init_Matrix_Keyboard();//矩阵键盘
-    do
-    {
-        vTaskDelay(pdMS_TO_TICKS(50));
-    } while ( keyboard_->key_value[BUTTON_START_2>>4]&(1<<(BUTTON_START_2&0xf)));
     Init_NVM();//数据保存
-    Init_USB();//USB
-    Init_hid();//HID
     Init_Axp2101();//电源控制
     Init_LCD_Display();//屏幕
     Init_Backlight();//背光
@@ -226,9 +217,15 @@ void Board::Init() {
     Init_Pcnt();//旋转编码器
     Init_IMU();//IMU
     Init_Haptic();//震动
-    Init_CPU();//CPU任务
     // // Init_Bluetooth();//蓝牙
     Init_profile();//配置文件
+    while ( keyboard_->key_value[BUTTON_START_2>>4]&(1<<(BUTTON_START_2&0xf)))
+    {
+        vTaskDelay(pdMS_TO_TICKS(5000));
+    }
+    Init_USB();//USB
+    Init_hid();//HID
+    Init_CPU();//CPU任务
     
     logging::info("Board Init Finish\n");
 }

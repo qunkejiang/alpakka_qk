@@ -1,9 +1,5 @@
-// #include "BT.h"
+#include "BT.h"
 
-// // BT()
-// // {
-// //     // Initialization code for Touch can be added here if needed
-// // }
 // /*
 //  * SPDX-FileCopyrightText: 2021-2024 Espressif Systems (Shanghai) CO LTD
 //  *
@@ -21,7 +17,7 @@
 // #include "esp_system.h"
 // #include "esp_wifi.h"
 // #include "esp_event.h"
-// #include "esp_log.h"
+#include "esp_log.h"
 // #include "nvs_flash.h"
 // #include "esp_bt.h"
 
@@ -43,10 +39,10 @@
 // #endif /* CONFIG_BT_SDP_COMMON_ENABLED */
 // #endif
 
-// #include "esp_hidd.h"
+//#include "esp_hidd.h"
 // #include "esp_hid_gap.h"
 
-// static const char *TAG = "HID_DEV_DEMO";
+static const char *TAG = "BT";
 
 // typedef struct
 // {
@@ -911,22 +907,16 @@
 // void ble_store_config_init(void);
 // #endif
 
-// void app_main(void)
-// {
-//     esp_err_t ret;
+BT::BT(void)
+{
+    // esp_err_t ret;
 // #if HID_DEV_MODE == HIDD_IDLE_MODE
 //     ESP_LOGE(TAG, "Please turn on BT HID device or BLE!");
 //     return;
 // #endif
-//     ret = nvs_flash_init();
-//     if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-//         ESP_ERROR_CHECK(nvs_flash_erase());
-//         ret = nvs_flash_init();
-//     }
-//     ESP_ERROR_CHECK( ret );
 
-//     ESP_LOGI(TAG, "setting hid gap, mode:%d", HID_DEV_MODE);
-//     ret = esp_hid_gap_init(HID_DEV_MODE);
+    // ESP_LOGI(TAG, "setting hid gap, mode:%d", HID_DEV_MODE);
+    // ret = esp_hid_gap_init(HID_DEV_MODE);
 //     ESP_ERROR_CHECK( ret );
 
 // #if CONFIG_BT_BLE_ENABLED || CONFIG_BT_NIMBLE_ENABLED
@@ -977,4 +967,4 @@
 //         ESP_LOGE(TAG, "esp_nimble_enable failed: %d", ret);
 //     }
 // #endif
-// }
+}
